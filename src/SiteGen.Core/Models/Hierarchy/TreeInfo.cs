@@ -10,10 +10,11 @@ namespace SiteGen.Core.Models.Hierarchy
         int leftValue;
         T parent;
         int rightValue;
+        IList<T> siblings;
 
         public TreeInfo()
         {
-            Siblings = new List<T>();
+            siblings = new List<T>();
             Children = new TreeEntityChildren<T>(Entity);
             Descendants = new List<T>();
             Ancestors = new List<T>();
@@ -92,7 +93,13 @@ namespace SiteGen.Core.Models.Hierarchy
         /// <summary>
         /// All siblings
         /// </summary>
-        public IList<T> Siblings { get; private set; }
+        public IList<T> Siblings
+        {
+            get
+            {
+                return siblings.Where(x => x != Entity).ToList();
+            }
+        }
 
         /// <summary>
         /// All children immediately below this node
@@ -114,5 +121,40 @@ namespace SiteGen.Core.Models.Hierarchy
         /// to be updated
         /// </summary>
         public bool IsDirty { get; set; }
+
+        public T? PreviousSibling
+        {
+            get
+            {
+                if (siblings == null || siblings.Count == 0) return default;
+                for(var i = 0; i < siblings.Count; i++)
+                {
+                    var child = siblings[i];
+                    if( child == Entity && i > 0) return siblings[i - 1];
+                }
+                return default;
+            }
+        }
+
+        public T? NextSibling
+        {
+            get
+            {
+                if (siblings == null || siblings.Count == 0) return default;
+                for (var i = 0; i < siblings.Count; i++)
+                {
+                    var child = siblings[i];
+                    if (child == Entity && i < (siblings.Count - 1)) return siblings[i + 1];
+                }
+                return default;
+            }
+        }
+        public void Refresh(IList<T> nodes)
+        {
+            siblings = nodes.Siblings(Entity, TreeListOptions.IncludeSelf).ToList();
+            Ancestors = nodes.Ancestors(Entity).ToList();
+            Descendants = nodes.Descendants(Entity).ToList();
+            //Children = nodes.Children(Entity).ToList();
+        }
     }
 }
