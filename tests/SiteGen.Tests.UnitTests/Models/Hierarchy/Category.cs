@@ -12,7 +12,7 @@ namespace SiteGen.Tests.UnitTests.Models.Hierarchy
 
         public Category()
         {
-            Id = Guid.NewGuid();
+            Guid = Guid.NewGuid();
             Tree = new TreeInfo<Category>(this);
         }
 
@@ -20,11 +20,11 @@ namespace SiteGen.Tests.UnitTests.Models.Hierarchy
 
         public string Name { get; set; }
 
-        public Guid Id { get; set; }
+        public Guid Guid { get; set; }
 
         public override string ToString()
         {
-            return string.Format("Category {0} [{1}]", Id, Name);
+            return string.Format("Category {0} [{1}]", Guid, Name);
         }
     }
 }

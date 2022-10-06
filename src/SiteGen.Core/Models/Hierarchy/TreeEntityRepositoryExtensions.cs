@@ -31,7 +31,7 @@ namespace SiteGen.Core.Models.Hierarchy
 
             // If we have any children, process recursively, updating
             // the rightValue as we go.
-            var children = nodes.Where(x => x.Tree.Parent != null && (x.Tree.Parent == node || (x.Tree.Parent.Id != Guid.Empty && x.Tree.Parent.Id.Equals(node.Id))));
+            var children = nodes.Where(x => x.Tree.Parent != null && (x.Tree.Parent == node || (x.Tree.Parent.Guid != Guid.Empty && x.Tree.Parent.Guid.Equals(node.Guid))));
 
             rightValue = children.Aggregate(rightValue, (current, child) => UpdateNode(child, current, nodes));
 

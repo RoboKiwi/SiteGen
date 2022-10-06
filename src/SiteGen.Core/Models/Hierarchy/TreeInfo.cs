@@ -64,7 +64,7 @@ namespace SiteGen.Core.Models.Hierarchy
                 //if( Entity == null) throw new InvalidOperationException("Please set the Entity before using the TreeInfo object!");
                 if( Entity != null && value != null )
                 {
-                    if( value == Entity || (!value.Id.Equals(default) && value.Id.Equals(Entity.Id)) )
+                    if( value == Entity || (!value.Guid.Equals(default) && value.Guid.Equals(Entity.Guid)) )
                         throw new InvalidOperationException("You can't make a tree node its own parent!");
                 }
 

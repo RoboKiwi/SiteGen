@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Microsoft.Extensions.Configuration;
 using SiteGen.Core.Configuration.Yaml;
 using SiteGen.Core.Models.Hierarchy;
 using Tommy.Extensions.Configuration;
@@ -19,8 +18,8 @@ public class SiteMapBuilder
         // Category node
 
         // Build category nodes
-        var categories = nodes.Where(x => x.Metadata?.Categories != null && x.Metadata.Categories.Count > 0)
-            .SelectMany(x => x.Metadata.Categories)
+        var categories = nodes.Where(x => x.Categories != null && x.Categories.Count > 0)
+            .SelectMany(x => x.Categories)
             .Distinct()
             .ToList();
 
@@ -34,7 +33,7 @@ public class SiteMapBuilder
             var category = await BuildAsync(categoryDirectory, false, false, true, cancellationToken);
 
             // Get all nodes that are assigned to this category
-            var matches = nodes.Where(x => x.Metadata?.Categories != null && x.Metadata.Categories.Contains(cat, StringComparer.OrdinalIgnoreCase)).ToList();
+            var matches = nodes.Where(x => x.Categories != null && x.Categories.Contains(cat, StringComparer.OrdinalIgnoreCase)).ToList();
 
             foreach(var match in matches)
             {
@@ -52,7 +51,7 @@ public class SiteMapBuilder
         // Update URIs
         foreach (var child in nodes)
         {
-            if (child?.Metadata.Url != null) continue;
+            if (child?.Url != null) continue;
                         
             var relativeFilename = Path.GetRelativePath(directory.FullName, child.Path);
 
@@ -68,7 +67,7 @@ public class SiteMapBuilder
 
             relativeFilename = "/" + relativeFilename.TrimStart('/', '\\').TrimEnd('/','\\').Replace('\\', '/') + "/";
 
-            child.Metadata.Url = new Uri(relativeFilename, UriKind.Relative);
+            child.Url = new Uri(relativeFilename, UriKind.Relative);
         }
 
         nodes.RebuildTree();
@@ -88,10 +87,7 @@ public class SiteMapBuilder
             FileName = directory.Name,
             Path = directory.FullName,
             Type = NodeType.Section,
-            Metadata = new ContentPageModel
-            {
-                Title = directory.Name
-            }
+            Title = directory.Name
         };
 
         node.Tree = new TreeInfo<SiteNode>(node);
@@ -123,10 +119,36 @@ public class SiteMapBuilder
                     // This is the section metadata file, so we can apply it to the parent node
                     node.FrontMatter = child.FrontMatter;
                     node.Content = child.Content;
-                    node.Id = child.Id;
+                    node.Guid = child.Guid;
                     node.HtmlContent = child.HtmlContent;
-                    node.Metadata = child.Metadata;
-
+                    node.Id = child.Id;
+                    node.Author = child.Author;
+                    node.Description = child.Description;
+                    node.Url = child.Url;
+                    node.Draft = child.Draft;
+                    node.Summary = child.Summary;
+                    node.Aliases = child.Aliases;
+                    node.Tags = child.Tags;
+                    node.WordCount = child.WordCount;
+                    node.Categories = child.Categories;
+                    node.Content = child.Content;
+                    node.ContentPlainText = child.ContentPlainText;
+                    node.Data = child.Data;
+                    node.DateCreated = child.DateCreated;
+                    node.DateExpired = child.DateExpired;
+                    node.DateModified = child.DateModified;
+                    node.DatePublished = child.DatePublished;
+                    node.HtmlContent = child.HtmlContent;
+                    node.Keywords = child.Keywords;
+                    node.Lang = child.Lang;
+                    node.LinkTitle = child.LinkTitle;
+                    node.Permalink = child.Permalink;
+                    node.ReadingTime = child.ReadingTime;
+                    node.Title = child.Title;
+                    node.Weight = child.Weight;
+                    node.WordCount = child.WordCount;
+                    node.WordCountFuzzy = child.WordCountFuzzy;
+                    
                     continue;
                 }
 
@@ -136,6 +158,8 @@ public class SiteMapBuilder
 
         return node;
     }
+
+    static readonly IList<string> skipBinding = new List<string> { "guid", "type" };
 
     private async Task<SiteNode?> BuildNodeAsync(FileInfo file)
     {
@@ -170,10 +194,8 @@ public class SiteMapBuilder
                     builder.AddYamlStream(stream);
                     break;
                 case FrontMatterFormat.Json:
-                    {
-                        builder.AddJsonStream(stream);
-                        break;
-                    }
+                    builder.AddJsonStream(stream);
+                    break;
                 case FrontMatterFormat.Toml:
                     builder.AddTomlStream(stream);
                     break;
@@ -181,12 +203,20 @@ public class SiteMapBuilder
                     throw new ArgumentOutOfRangeException();
             }
 
+            var root = builder.Build();
+            var dictionary = root.AsEnumerable().ToDictionary(pair => pair.Key, pair => pair.Value);
+            node.FrontMatter = dictionary.ToDictionary(pair => pair.Key, pair => pair.Value);
+
+            foreach(var key in skipBinding)
+            {
+                if (!dictionary.ContainsKey(key)) continue;
+                dictionary.Remove(key);
+            }
+            
             try
             {
-                var root = builder.Build();
-
-                node.FrontMatter = root.AsEnumerable().ToDictionary(pair => pair.Key, pair => pair.Value);
-                node.Metadata = root.Get<ContentPageModel>();
+                var bindingRoot = new ConfigurationBuilder().AddInMemoryCollection(dictionary).Build();
+                bindingRoot.Bind(node);
             }
             catch (Exception ex)
             {
