@@ -42,9 +42,9 @@ public class PygmentsBlockRenderer : HtmlObjectRenderer<PygmentsBlock>
 
             if (!string.IsNullOrWhiteSpace(error))
             {
-                renderer.Write("<pre>");
+                renderer.Write("<pre><code>");
                 renderer.Write(error);
-                renderer.Write("</pre>");
+                renderer.Write("</code></pre>");
             }
 
             renderer.Write(output);

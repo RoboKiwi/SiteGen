@@ -1,7 +1,36 @@
+using Markdig.Helpers;
+using System.Diagnostics.CodeAnalysis;
+
 namespace SiteGen.Core.Extensions;
 
 public static class SpanExtensions
 {
+    public static bool IsEmpty([NotNullWhen(false)] this string? value)
+    {
+        return string.IsNullOrWhiteSpace(value);
+    }
+
+    /// <summary>
+    /// Returns a count of the number of words in the string,
+    /// separated by whitespace characters.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
+    public static int WordCount(this ReadOnlySpan<char> value)
+    {
+        var inWord = false;
+        int count = 0;
+
+        foreach (var ch in value)
+        {
+            var wasInWord = inWord;
+            inWord = !ch.IsWhiteSpaceOrZero();
+            if (inWord && !wasInWord) count++;
+        }
+
+        return count;
+    }
+
     public static int CountLeadingWhitespace(this string? value)
     {
         for (var i = 0; i < value.Length; i++)

@@ -97,14 +97,14 @@ namespace SiteGen.Core.Extensions.Markdown
     {
         public TocNode(int level, string name, string? id)
         {
-            Id = Guid.NewGuid();
+            Guid = Guid.NewGuid();
             Level = level;
             Name = name;
             Href = id;
             Tree = new TreeInfo<TocNode>(this);
         }
 
-        public Guid Id { get; set; }
+        public Guid Guid { get; set; }
 
         public int Level { get; set; }
 

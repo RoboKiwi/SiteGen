@@ -1,4 +1,6 @@
-﻿using SiteGen.Core.Models.Hierarchy;
+﻿using Markdig.Syntax;
+using SiteGen.Core.Extensions.Markdown;
+using SiteGen.Core.Models.Hierarchy;
 
 namespace SiteGen.Core.Models;
 
@@ -75,4 +77,8 @@ public class SiteNode : IEntity, ITreeEntity<SiteNode>
     public IList<string> Tags { get; set; }
 
     public int ReadingTime { get; set; }
+
+    public MarkdownDocument? Document { get; internal set; }
+
+    public IList<TocNode>? TableOfContents { get; internal set; }
 }

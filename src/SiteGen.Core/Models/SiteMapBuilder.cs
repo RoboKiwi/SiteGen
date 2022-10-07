@@ -13,6 +13,8 @@ public class SiteMapBuilder
         
         var node = await BuildAsync(directory, cancellationToken);
 
+        if (node == null) throw new Exception("Failed to parse the content directory");
+
         var nodes = node.FlattenTree().ToList();
 
         // Category node
