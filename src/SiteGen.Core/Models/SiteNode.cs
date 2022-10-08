@@ -6,6 +6,11 @@ namespace SiteGen.Core.Models;
 
 public class SiteNode : IEntity, ITreeEntity<SiteNode>
 {
+    public SiteNode()
+    {
+        Tree = new TreeInfo<SiteNode>(this);
+    }
+
     public Guid Guid { get; set; }
 
     public NodeType Type { get; set; }
