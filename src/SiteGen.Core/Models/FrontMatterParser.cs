@@ -4,8 +4,10 @@ namespace SiteGen.Core.Models;
 
 public class FrontMatterParser
 {
-    public static Tuple<FrontMatterFormat, string>? ReadBlock(string content)
+    public static Tuple<FrontMatterFormat, string>? ReadBlock(string? content)
     {
+        if (content == null) return null;
+
         using var reader = new StringReader(content);
 
         var line = reader.ReadLine()?.Trim();
