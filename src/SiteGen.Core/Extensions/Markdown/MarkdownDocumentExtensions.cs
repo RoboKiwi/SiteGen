@@ -44,7 +44,10 @@ namespace SiteGen.Core.Extensions.Markdown
             {
                 var attributes = heading.TryGetAttributes();
 
-                var content = heading.Inline?.Single().ToString();
+                if (heading.Inline == null) throw new InvalidOperationException("Heading has no inline text");
+
+                string content = string.Concat(heading.Inline);
+                
                 var entry = new TocNode(heading.Level, content, attributes?.Id);
 
                 var node = stack.Count > 0 ? stack.Peek() : null;
