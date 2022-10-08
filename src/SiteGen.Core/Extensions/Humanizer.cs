@@ -6,4 +6,9 @@ public static class Humanizer
     {
        return Path.GetFileNameWithoutExtension(file.FullName).ToDelimitedWords(' ', TitleCaseOptions.FirstWordOnly);
     }
+
+    internal static string FromString(string value)
+    {
+        return value.ToDelimitedWords(' ', TitleCaseOptions.FirstWordOnly);
+    }
 }
