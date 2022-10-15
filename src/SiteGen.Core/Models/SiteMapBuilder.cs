@@ -1,12 +1,33 @@
 ﻿using System.Text;
 using SiteGen.Core.Configuration.Yaml;
 using SiteGen.Core.Models.Hierarchy;
+using SiteGen.Core.Services;
+using SiteGen.Core.Services.Generators;
 using Tommy.Extensions.Configuration;
 
 namespace SiteGen.Core.Models;
 
-public class SiteMapBuilder
+public class SiteMapBuilder : ISiteMapBuilder
 {
+    private List<INodeGenerator> generators;
+
+    public SiteMapBuilder(IServiceProvider services)
+    {
+        generators = services.GetServices<INodeGenerator>().ToList();
+    }
+
+    public async Task<SiteMap> BuildAsync()
+    {
+        var sitemap = new SiteMap();
+
+        foreach(var generator in generators)
+        {
+            await generator.GenerateAsync(sitemap);
+        }
+
+        return sitemap;
+    }
+
     public async Task<IList<SiteNode>> Build(string basePath, CancellationToken cancellationToken = default)
     {
         var directory = new DirectoryInfo(basePath);
@@ -161,8 +182,6 @@ public class SiteMapBuilder
         return node;
     }
 
-    static readonly IList<string> skipBinding = new List<string> { "guid", "type" };
-
     private async Task<SiteNode?> BuildNodeAsync(FileInfo file)
     {
         var filename = file.FullName;
@@ -209,11 +228,11 @@ public class SiteMapBuilder
             var dictionary = root.AsEnumerable().ToDictionary(pair => pair.Key, pair => pair.Value);
             node.FrontMatter = dictionary.ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            foreach(var key in skipBinding)
-            {
-                if (!dictionary.ContainsKey(key)) continue;
-                dictionary.Remove(key);
-            }
+            //foreach(var key in skipBinding)
+            //{
+            //    if (!dictionary.ContainsKey(key)) continue;
+            //    dictionary.Remove(key);
+            //}
             
             try
             {

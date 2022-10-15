@@ -1,44 +1,53 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SiteGen.Core.Models;
 using SiteGen.Core.Services;
+using SiteGen.Core.Services.Generators;
+using SiteGen.Core.Services.Processors;
 
 namespace SiteGen.Core.Controllers;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
-    private readonly ISiteMapService siteMap;
-    private readonly SitePipelineBuilder pipeline;
+    private readonly ISiteMapBuilder graph;
+    private readonly MarkdownProcessor processor;
+    private readonly IServiceProvider services;
+    private readonly IList<ISiteNodeProcessor> processors;
 
-    public HomeController(ILogger<HomeController> logger, ISiteMapService siteMap, SitePipelineBuilder pipeline)
+    public HomeController(ILogger<HomeController> logger, ISiteMapBuilder graph, MarkdownProcessor processor, IServiceProvider services, IEnumerable<ISiteNodeProcessor> processors)
     {
         _logger = logger;
-        this.siteMap = siteMap;
-        this.pipeline = pipeline;
+        this.graph = graph;
+        this.processor = processor;
+        this.services = services;
+        this.processors = processors.ToList();
     }
 
     public async Task<IActionResult> Page()
     {
-        var path = Request.Path.ToUriComponent();
+        var site = await graph.BuildAsync();
 
-        var normalizedPath = ("/" + (path ?? "/").TrimStart('/')).TrimEnd('/') + '/';
+        var uri = UrlBuilder.Build((string?)Request.Path.ToUriComponent() ?? "/");
 
-        var uri = new Uri(normalizedPath, UriKind.Relative);
-
-        var nodes = await siteMap.GetNodesAsync("content");
-
-        var node = nodes.SingleOrDefault(x => x.Url == uri);
+        var node = site.FindByUri(uri);
 
         if (node == null)
         {
             return NotFound();
         }
 
-        node.Tree.Refresh(nodes);
+        node.Tree.Refresh(site);// nodes);
 
-        ViewBag.Root = nodes.First();
+        ViewBag.Root = site.First();
 
-        await pipeline.ProcessNode(node);
+        // Process Markdown
+        await processor.ProcessAsync(node);
+
+        // Run processors
+        foreach (var processor in processors)
+        {
+            await processor.ProcessAsync(node);
+        }
 
         switch (node.Type)
         {

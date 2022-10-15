@@ -23,11 +23,8 @@ public static class ServiceCollectionExtensions
 
         services.AddOptions<SiteGenSettings>();
 
-        services.TryAddSingleton<SiteMapBuilder>();
-        services.TryAddSingleton<ISiteMapService, SiteMapService>();
-        services.TryAddSingleton<SitePipelineBuilder>();
-        services.TryAddSingleton<DefaultSiteMapBuilder>();
-        services.TryAddSingleton<ISiteMapBuilder, SiteMapBuilder>();
+        //services.TryAddSingleton<ISiteMapService, SiteMapService>();
+        services.TryAddSingleton<ISiteMapBuilder, DefaultSiteMapBuilder>();
     }
 
     public static IServiceCollection ConfigureGenerators(this IServiceCollection services)
@@ -39,8 +36,8 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection ConfigureProcessors(this IServiceCollection services)
     {
-        services.AddTransient<ISiteNodeProcessor, FrontMatterProcessor>();
-        services.AddTransient<ISiteNodeProcessor, MarkdownProcessor>();
+        services.AddTransient<FrontMatterProcessor>();
+        services.AddTransient<MarkdownProcessor>();
         services.AddTransient<ISiteNodeProcessor, WordCountProcessor>();
         services.AddTransient<ISiteNodeProcessor, WordCountFuzzyProcessor>();
         services.AddTransient<ISiteNodeProcessor, ReadingTimeProcessor>();
