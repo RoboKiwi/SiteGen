@@ -1,12 +1,15 @@
 ﻿using Markdig;
+using Markdig.Extensions.AutoLinks;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using SiteGen.Core.Configuration;
 using SiteGen.Core.Extensions.Markdown.Mermaid;
 using SiteGen.Core.Extensions.Markdown.Pygments;
 using SiteGen.Core.Models;
 using SiteGen.Core.Services;
+using SiteGen.Core.Services.Generators;
 using SiteGen.Core.Services.Processors;
 
-namespace SiteGen.Core.Extensions;
+namespace SiteGen.Core;
 
 public static class ServiceCollectionExtensions
 {
@@ -16,13 +19,27 @@ public static class ServiceCollectionExtensions
 
         services.ConfigureProcessors();
 
+        services.ConfigureGenerators();
+
+        services.AddOptions<SiteGenSettings>();
+
         services.TryAddSingleton<SiteMapBuilder>();
         services.TryAddSingleton<ISiteMapService, SiteMapService>();
         services.TryAddSingleton<SitePipelineBuilder>();
+        services.TryAddSingleton<DefaultSiteMapBuilder>();
+        services.TryAddSingleton<ISiteMapBuilder, SiteMapBuilder>();
+    }
+
+    public static IServiceCollection ConfigureGenerators(this IServiceCollection services)
+    {
+        services.AddTransient<MarkdownGenerator>();
+        services.AddTransient<TaxonomyGenerator>();
+        return services;
     }
 
     public static IServiceCollection ConfigureProcessors(this IServiceCollection services)
     {
+        services.AddTransient<ISiteNodeProcessor, FrontMatterProcessor>();
         services.AddTransient<ISiteNodeProcessor, MarkdownProcessor>();
         services.AddTransient<ISiteNodeProcessor, WordCountProcessor>();
         services.AddTransient<ISiteNodeProcessor, WordCountFuzzyProcessor>();
@@ -38,8 +55,10 @@ public static class ServiceCollectionExtensions
             .UseAdvancedExtensions()
             .UseSmartyPants()
             .UseYamlFrontMatter()
+            .UseAutoLinks(new AutoLinkOptions { UseHttpsForWWWLinks = true })
             .Use<MermaidMarkdownExtension>()
-            .Use<PygmentsMarkdownExtension>();
+            .Use<PygmentsMarkdownExtension>()
+            ;
 
         services.TryAddSingleton(pipeline.Build());
 

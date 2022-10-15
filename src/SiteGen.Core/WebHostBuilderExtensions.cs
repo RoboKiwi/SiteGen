@@ -1,4 +1,4 @@
-﻿namespace SiteGen.Core.Extensions;
+﻿namespace SiteGen.Core;
 
 public static class WebHostBuilderExtensions
 {
