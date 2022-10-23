@@ -8,4 +8,6 @@ internal class CliArgs
     public string ContentPath { get; set; }
 
     public Command Command { get; set; }
+
+    public List<string> StaticPaths { get; set; }
 }
