@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SiteGen.Cli": {
+      "commandName": "Project",
+      "commandLineArgs": "serve"
+    }
+  }
+}
