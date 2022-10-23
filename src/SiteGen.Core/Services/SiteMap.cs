@@ -1,6 +1,7 @@
 ﻿using SiteGen.Core.Models;
 using SiteGen.Core.Services.Generators;
 using System.Collections.ObjectModel;
+using System.Net;
 
 namespace SiteGen.Core.Services;
 
@@ -24,6 +25,6 @@ public static class SiteMapExtensions
 {
     public static SiteNode? FindByUri(this SiteMap nodes, Uri uri)
     {
-        return nodes.SingleOrDefault(x => x.Url == uri);
+        return nodes.SingleOrDefault(x => x.Url == uri || WebUtility.UrlDecode(x.Url.ToString()) == WebUtility.UrlDecode(uri.ToString()));
     }
 }

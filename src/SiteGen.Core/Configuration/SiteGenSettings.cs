@@ -10,7 +10,7 @@
                 {"tag", "tags" }
             };
 
-            ContentPaths = new List<string> { "content" };
+            ContentPaths = new List<string>();// { "content" };
         }
 
         public IDictionary<string, string?> Taxonomies { get; set; }

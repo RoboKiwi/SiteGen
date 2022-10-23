@@ -17,5 +17,12 @@ public class DirectorySiteNode : SiteNode
         Title = Humanizer.FromFilename(directory);
         Type = NodeType.Section;
         Url = UrlBuilder.RelativeToDirectory(directory, baseDirectory);
+
+        if(directory.Exists)
+        {
+            Date = directory.LastWriteTime < directory.CreationTime ? directory.LastWriteTime : directory.CreationTime;
+            DateCreated = directory.CreationTime;
+            DateModified = directory.LastWriteTime;
+        }
     }
 }

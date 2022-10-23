@@ -4,7 +4,6 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using SiteGen.Core.Configuration;
 using SiteGen.Core.Extensions.Markdown.Mermaid;
 using SiteGen.Core.Extensions.Markdown.Pygments;
-using SiteGen.Core.Models;
 using SiteGen.Core.Services;
 using SiteGen.Core.Services.Generators;
 using SiteGen.Core.Services.Processors;
@@ -23,7 +22,6 @@ public static class ServiceCollectionExtensions
 
         services.AddOptions<SiteGenSettings>();
 
-        //services.TryAddSingleton<ISiteMapService, SiteMapService>();
         services.TryAddSingleton<ISiteMapBuilder, DefaultSiteMapBuilder>();
     }
 
@@ -38,6 +36,7 @@ public static class ServiceCollectionExtensions
     {
         services.AddTransient<FrontMatterProcessor>();
         services.AddTransient<MarkdownProcessor>();
+        services.AddTransient<ISiteNodeProcessor, GitInfoProcessor>();
         services.AddTransient<ISiteNodeProcessor, WordCountProcessor>();
         services.AddTransient<ISiteNodeProcessor, WordCountFuzzyProcessor>();
         services.AddTransient<ISiteNodeProcessor, ReadingTimeProcessor>();

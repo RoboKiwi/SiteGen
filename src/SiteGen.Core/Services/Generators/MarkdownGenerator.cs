@@ -89,6 +89,13 @@ public class MarkdownGenerator : INodeGenerator
             Title = Humanizer.FromFilename(file)
         };
 
+        if (file.Exists)
+        {
+            node.Date = file.LastWriteTime < file.CreationTime ? file.LastWriteTime : file.CreationTime;
+            node.DateCreated = file.CreationTime;
+            node.DateModified = file.LastWriteTime;
+        }
+
         node.Url = UrlBuilder.RelativeToDirectory(file, baseDirectory);
 
         node.Tree = new TreeInfo<SiteNode>(node);
