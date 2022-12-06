@@ -71,7 +71,7 @@ public class SiteNode : IEntity, ITreeEntity<SiteNode>
 
     public string? Permalink { get; set; }
 
-    public int Weight { get; set; }
+    public int? Weight { get; set; }
 
     public int WordCount { get; set; }
 
