@@ -24,8 +24,8 @@ public class MarkdownProcessor : ISiteNodeProcessor
 
         node.Document = Markdown.Parse(node.Content, pipeline);
 
-        node.ContentPlainText = node.Document.ToPlainText(pipeline);
         node.HtmlContent = node.Document.ToHtml(pipeline);
+        node.ContentPlainText = node.Document.ToPlainText(pipeline);
 
         return Task.CompletedTask;
     }

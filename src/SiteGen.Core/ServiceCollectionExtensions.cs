@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
         services.AddOptions<SiteGenSettings>();
 
         services.TryAddSingleton<ISiteMapBuilder, DefaultSiteMapBuilder>();
+        services.TryAddSingleton<FileCacheProvider>();
     }
 
     public static IServiceCollection ConfigureGenerators(this IServiceCollection services)
@@ -47,16 +48,22 @@ public static class ServiceCollectionExtensions
 
     public static IServiceCollection ConfigureMarkdig(this IServiceCollection services)
     {
-        var pipeline = new MarkdownPipelineBuilder()
-            .UseAdvancedExtensions()
-            .UseSmartyPants()
-            .UseYamlFrontMatter()
-            .UseAutoLinks(new AutoLinkOptions { UseHttpsForWWWLinks = true })
-            .Use<MermaidMarkdownExtension>()
-            .Use<PygmentsMarkdownExtension>()
-            ;
+        services.AddTransient<MermaidMarkdownExtension>();
+        services.AddTransient<PygmentsMarkdownExtension>();
 
-        services.TryAddSingleton(pipeline.Build());
+        services.TryAddSingleton( (provider) =>
+        {
+            var pipeline = new MarkdownPipelineBuilder()
+                .UseAdvancedExtensions()
+                .UseSmartyPants()
+                .UseYamlFrontMatter()
+                .UseAutoLinks(new AutoLinkOptions { UseHttpsForWWWLinks = true });
+            
+            pipeline.Use(provider.GetRequiredService<MermaidMarkdownExtension>());
+            pipeline.Use(provider.GetRequiredService<PygmentsMarkdownExtension>());
+                        
+            return pipeline.Build();
+        });
 
         return services;
     }

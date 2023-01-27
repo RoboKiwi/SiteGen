@@ -1,10 +1,18 @@
 ﻿using Markdig;
 using Markdig.Renderers;
+using SiteGen.Core.Services;
 
 namespace SiteGen.Core.Extensions.Markdown.Mermaid;
 
 public class MermaidMarkdownExtension : IMarkdownExtension
 {
+    private readonly FileCacheProvider cache;
+
+    public MermaidMarkdownExtension(FileCacheProvider cache)
+    {
+        this.cache = cache;
+    }
+
     public void Setup(MarkdownPipelineBuilder pipeline)
     {
         if (pipeline.BlockParsers.Contains<MermaidDiagramParser>()) return;
@@ -17,6 +25,6 @@ public class MermaidMarkdownExtension : IMarkdownExtension
     {
         if (renderer is not HtmlRenderer htmlRenderer) return;
         if (htmlRenderer.ObjectRenderers.Contains<MermaidBlockRenderer>()) return;
-        htmlRenderer.ObjectRenderers.Insert(0, new MermaidBlockRenderer());
+        htmlRenderer.ObjectRenderers.Insert(0, new MermaidBlockRenderer(cache));
     }
 }

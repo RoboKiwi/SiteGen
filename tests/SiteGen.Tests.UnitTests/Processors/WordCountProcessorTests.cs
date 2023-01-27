@@ -1,5 +1,6 @@
 ﻿using SiteGen.Core.Models;
 using SiteGen.Core.Services;
+using SiteGen.Core.Services.Processors;
 
 namespace SiteGen.Tests.UnitTests.Processors
 {
