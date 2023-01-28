@@ -31,7 +31,7 @@ public static class UrlBuilder
             filename = filename.Replace("//", "/");
         }
 
-        return filename.Replace('/', System.IO.Path.PathSeparator);
+        return filename.Replace('/', Path.DirectorySeparatorChar);
     }
 
     public static Uri RelativeToDirectory(FileSystemInfo file, FileSystemInfo baseDirectory)

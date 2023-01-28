@@ -79,15 +79,15 @@ Console.WriteLine("Building...");
 
 foreach (var item in map)
 {
-    var filename = UrlBuilder.NormalizeFilename( Path.GetFullPath( directory.FullName + item.Location.ToString().Replace('/','\\') + "\\index.html") );
-
-    
+    var directoryName = Path.Join(directory.FullName, item.Location.ToString().Replace('/', Path.DirectorySeparatorChar));
+    var filename = Path.GetFullPath( Path.Join(directoryName, "index.html") );
+        
     var file = new FileInfo(filename);
     if (file.Directory?.Exists == false) file.Directory.Create();
     
     var uri = new Uri(client.BaseAddress, item.Location);
 
-    Console.WriteLine(uri);
+    Console.WriteLine("{0} => {1}", uri, filename);
 
     var response = await client.GetAsync(uri);
     response.EnsureSuccessStatusCode();    
