@@ -4,6 +4,7 @@ using SiteGen.Core.Formatters.SiteMapXml;
 using SiteGen.Cli;
 using SiteGen.Cli.Commands;
 using System.Diagnostics;
+using SiteGen.Core.Services.Generators;
 
 var configBuilder = new ConfigurationBuilder();
 configBuilder.AddEnvironmentVariables();
@@ -78,7 +79,8 @@ Console.WriteLine("Building...");
 
 foreach (var item in map)
 {
-    var filename = Path.GetFullPath( directory.FullName + item.Location.ToString().Replace('/','\\') + "\\index.html");
+    var filename = UrlBuilder.NormalizeFilename( Path.GetFullPath( directory.FullName + item.Location.ToString().Replace('/','\\') + "\\index.html") );
+
     
     var file = new FileInfo(filename);
     if (file.Directory?.Exists == false) file.Directory.Create();

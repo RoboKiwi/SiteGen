@@ -20,6 +20,20 @@ public static class UrlBuilder
         return clean.ToString().Replace('/','\\');
     }
 
+    public static string NormalizeFilename(string filename)
+    {
+        // Replace all backslashes with forward slashes
+        filename = filename.Replace('\\', '/');
+
+        // Trim duplicate slashes
+        while (filename.IndexOf("//") > -1)
+        {
+            filename = filename.Replace("//", "/");
+        }
+
+        return filename.Replace('/', System.IO.Path.PathSeparator);
+    }
+
     public static Uri RelativeToDirectory(FileSystemInfo file, FileSystemInfo baseDirectory)
     {
         var relativeFilename = Path.GetRelativePath(baseDirectory.FullName, file.FullName).ToLowerInvariant();
