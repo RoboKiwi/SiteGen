@@ -2,6 +2,7 @@
 using Markdig.Renderers.Html;
 using SiteGen.Core.Services;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 
 namespace SiteGen.Core.Extensions.Markdown.Mermaid;
 
@@ -22,39 +23,60 @@ public class MermaidBlockRenderer : HtmlObjectRenderer<MermaidBlock>
 
         if (renderer.EnableHtmlForBlock)
         {
-            renderer.Write("<div").WriteAttributes(obj).WriteLine(">");
-
-            //  npx -p @mermaid-js/mermaid-cli mmdc
-            var contents = obj.Lines.ToSlice().Text;
-
-            var hash = Hasher.Md5Hash(contents);
-
-            var filename = $"{hash}.mmd";
-
-            using var temp = cache.GetTempFile(filename);
-            using var svgFile = cache.GetTempFile($"{filename}.svg");
-
-            File.WriteAllText(temp.FullName, contents);
-
-            var startInfo = new ProcessStartInfo
+            try
             {
-                FileName = "C:\\Program Files\\nodejs\\npx.cmd",
-                Arguments = $"-p @mermaid-js/mermaid-cli mmdc -i \"{temp.FullName}\" -o \"{svgFile.FullName}\"",
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
+                renderer.Write("<div").WriteAttributes(obj).WriteLine(">");
 
-            var process = Process.Start(startInfo)!;
-            process.WaitForExit((int)timeout.TotalMilliseconds);
+                //  npx -p @mermaid-js/mermaid-cli mmdc
+                var contents = obj.Lines.ToSlice().Text;
 
-            var output = process.StandardOutput.ReadToEnd();
-            var error = process.StandardError.ReadToEnd();
+                var hash = Hasher.Md5Hash(contents);
 
-            var svg = File.ReadAllText(svgFile.FullName);
+                var filename = $"{hash}.mmd";
 
-            renderer.Write(svg);
+                using var temp = cache.GetTempFile(filename);
+                using var svgFile = cache.GetTempFile($"{filename}.svg");
 
-            renderer.WriteLine("</div>");
+                File.WriteAllText(temp.FullName, contents);
+
+                var command = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "npm.cmd" : "npm";
+
+                var startInfo = new ProcessStartInfo
+                {
+                    FileName = command,
+                    Arguments = $"run -- @mermaid-js/mermaid-cli mmdc -i \"{temp.FullName}\" -o \"{svgFile.FullName}\"",
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true
+                };
+
+                var process = Process.Start(startInfo)!;
+                process.WaitForExit((int)timeout.TotalMilliseconds);
+
+                var output = process.StandardOutput.ReadToEnd();
+                var error = process.StandardError.ReadToEnd();
+
+                if(!string.IsNullOrWhiteSpace(error))
+                {
+                    renderer.Write("<pre><code>");
+                    renderer.Write(error);
+                    renderer.Write("</code></pre>");
+                }
+                else
+                {
+                    var svg = File.ReadAllText(svgFile.FullName);
+                    renderer.Write(svg);
+                }
+            }
+            catch(Exception ex)
+            {
+                renderer.Write("<pre><code>");
+                renderer.Write(ex.ToString());
+                renderer.Write("</code></pre>");
+            }
+            finally
+            {
+                renderer.WriteLine("</div>");
+            }
         }
         else
         {
