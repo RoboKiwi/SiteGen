@@ -10,4 +10,6 @@ internal class CliArgs
     public Command Command { get; set; }
 
     public List<string> StaticPaths { get; set; }
+
+    public string ServerUri { get; set; }
 }

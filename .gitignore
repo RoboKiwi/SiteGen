@@ -40,3 +40,4 @@ artifacts/
 .idea/
 
 node_modules/
+/examples

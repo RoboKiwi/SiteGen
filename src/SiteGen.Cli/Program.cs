@@ -1,20 +1,9 @@
-﻿using AngleSharp;
-using AngleSharp.Css.Dom;
-using AngleSharp.Dom;
-using AngleSharp.Html.Dom;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http.Extensions;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using SiteGen.Core.Configuration;
-using SiteGen.Core;
 using SiteGen.Core.Formatters.SiteMapXml;
-using SiteGen.Core.Services.Generators;
 using SiteGen.Cli;
 using SiteGen.Cli.Commands;
 using System.Diagnostics;
-
 
 var configBuilder = new ConfigurationBuilder();
 configBuilder.AddEnvironmentVariables();
@@ -24,14 +13,14 @@ var configuration = configBuilder.Build();
 
 var settings = new CliArgs
 {
-    ContentPath = "public"
+    Command = Enum.Parse<Command>(args.Length > 0 ? args[0] : "Build", true),
+    ContentPath = "public",
+    ServerUri = "http://localhost:5000",
+    StaticPaths = new List<string>
+    {
+        "wwwroot"
+    },
 };
-
-var serverUri = "http://localhost:5048";
-
-settings.StaticPaths = new List<string> { "D:\\Work\\RoboKiwi\\RoboKiwi.com\\static", "D:\\Work\\RoboKiwi\\SiteGen\\examples\\RoboKiwi.com\\wwwroot" };
-
-settings.Command = Enum.Parse<Command>(args.Length > 0 ? args[0] : "Build", true);
 
 configuration.Bind(settings);
 
@@ -43,7 +32,7 @@ services.AddTransient<ServeCommand>();
 var factory = new DefaultServiceProviderFactory();
 var serviceProvider = factory.CreateServiceProvider(services);
 
-ICommandlet command = null;
+ICommandlet command = default;
 
 switch (settings.Command)
 {
@@ -66,7 +55,7 @@ if( command != null)
 
 // Get the sitemap
 var client = new HttpClient();
-client.BaseAddress = new Uri(serverUri);
+client.BaseAddress = new Uri(settings.ServerUri);
 
 var xml = await client.GetStringAsync("/sitemap.xml");
 
@@ -76,16 +65,15 @@ var directory = new DirectoryInfo("public");
 if (!directory.Exists) directory.Create();
 
 // Drop the sitemap into the destination
-File.WriteAllText(xml, directory.FullName);
+File.WriteAllText( Path.Combine( directory.FullName, "sitemap.xml"), xml);
 
 var stopwatch = new Stopwatch();
 stopwatch.Start();
 
 Console.WriteLine("Building...");
 
-var config = Configuration.Default;
-var context = BrowsingContext.New(config);
-
+//var config = Configuration.Default;
+//var context = BrowsingContext.New(config);
 //using (var document = context.GetService<IHtmlParser>().ParseDocument(contents))
 
 foreach (var item in map)
@@ -145,7 +133,7 @@ foreach(var staticPath in settings.StaticPaths)
         var relativePath = Path.GetRelativePath(staticPath, file.FullName);
         var destination = new FileInfo(Path.Combine(directory.FullName, relativePath));
         Console.WriteLine(destination.FullName);
-        if(destination.Directory != null && !destination.Directory.Exists) destination.Directory.Create();
+        if(destination.Directory?.Exists == false) destination.Directory.Create();
         file.CopyTo(destination.FullName, true);
     }
 }
@@ -153,6 +141,3 @@ foreach(var staticPath in settings.StaticPaths)
 stopwatch.Stop();
 
 Console.WriteLine($"Finished in {stopwatch.Elapsed}");
-
-Console.WriteLine("Press ENTER");
-Console.ReadLine();

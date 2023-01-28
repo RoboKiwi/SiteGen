@@ -5,6 +5,9 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>sitegen</ToolCommandName>
+    <Title>SiteGen</Title>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,8 +17,8 @@
     <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.2.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
+    </ItemGroup>
 
 </Project>
