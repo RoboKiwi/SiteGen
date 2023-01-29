@@ -4,7 +4,6 @@ using SiteGen.Core.Formatters.SiteMapXml;
 using SiteGen.Cli;
 using SiteGen.Cli.Commands;
 using System.Diagnostics;
-using SiteGen.Core.Services.Generators;
 
 var configBuilder = new ConfigurationBuilder();
 configBuilder.AddEnvironmentVariables();
@@ -19,7 +18,7 @@ var settings = new CliArgs
     ServerUri = "http://localhost:5000",
     StaticPaths = new List<string>
     {
-        "wwwroot"
+        "wwwroot", "static"
     },
 };
 
@@ -124,17 +123,20 @@ foreach (var item in map)
 }
 
 // Copy static files
+Console.WriteLine("Copying static files...");
 foreach(var staticPath in settings.StaticPaths)
 {
     var dir = new DirectoryInfo(staticPath);
     if (!dir.Exists) continue;
+
+    Console.Write("From: {0}", dir.FullName);
     
     foreach(var file in dir.EnumerateFiles("*", SearchOption.AllDirectories))
     {
         if (!file.Exists) continue;
         var relativePath = Path.GetRelativePath(staticPath, file.FullName);
         var destination = new FileInfo(Path.Combine(directory.FullName, relativePath));
-        Console.WriteLine(destination.FullName);
+        Console.WriteLine("{0} => {1}", file.FullName, destination.FullName);
         if(destination.Directory?.Exists == false) destination.Directory.Create();
         file.CopyTo(destination.FullName, true);
     }
