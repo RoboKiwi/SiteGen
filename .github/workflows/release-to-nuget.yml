@@ -1,0 +1,31 @@
+name: Release to NuGet.org
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - '*'
+    paths-ignore:
+      - '.github/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          submodules: true
+
+      - name: Package
+        id: run-package
+        run: |
+            dotnet pack -o ./publish /p:Version=${{ github.ref_name }}
+
+      - name: Push to NuGet.org
+        id: run-push
+        run: |
+           dotnet nuget push "./publish/*.nupkg" --skip-duplicate --api-key "${{ secrets.NUGET_API_KEY }}" --source https://api.nuget.org/v3/index.json
