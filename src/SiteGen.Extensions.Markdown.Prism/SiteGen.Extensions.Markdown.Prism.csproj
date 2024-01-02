@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <TypeScriptToolsDisable>true</TypeScriptToolsDisable>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <None Remove="index.html" />
+      <None Remove="prism.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Include="index.html" />
+      <EmbeddedResource Include="prism.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
+    </ItemGroup>
+</Project>
