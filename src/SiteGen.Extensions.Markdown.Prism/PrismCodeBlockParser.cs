@@ -14,7 +14,7 @@ public class PrismCodeBlockParser : FencedBlockParserBase<PrismCodeBlock>
         MaximumMatchCount = 3;
         InfoPrefix = "language-";
         InfoParser = PrismCodeInfoParser;
-        DefaultClass = "";
+        DefaultClass = "line-numbers";
     }
 
     public string? DefaultClass { get; private set; }

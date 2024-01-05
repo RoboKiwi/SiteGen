@@ -90,10 +90,9 @@ public class PrismHost : IAsyncDisposable
             }
         }
 
-        // Load the source
-        var expression = $"Prism.highlight(`{source}`, Prism.languages.{language}, \"{language}\");";
-        var colorized = await page.EvaluateAsync<string>(expression);
-
-        return colorized;
+        // Set the source code
+        return await page.EvaluateAsync<string>($@"(source) => {{
+    return Prism.highlight(source, Prism.languages.{language.ToLowerInvariant()}, ""{language.ToLowerInvariant()}"");
+}}", source);
     }
 }

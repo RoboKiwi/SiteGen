@@ -17,17 +17,16 @@ public class PrismCodeBlockRenderer(PrismHost host) : HtmlObjectRenderer<PrismCo
             var lang = obj.Info?.ToString() ?? "text";
             if (string.IsNullOrWhiteSpace(lang)) lang = "text";
 
-            renderer.Write("<pre").WriteAttributes(obj).WriteLine(">");
+            renderer.Write("<pre").WriteAttributes(obj).Write(">");
             
-            var contents = obj.Lines.ToString();
-
             try
             {
+                var contents = obj.Lines.ToString();
                 var output = host.Highlight(contents, lang).GetAwaiter().GetResult();
 
-                renderer.WriteLine("<code>");
+                renderer.Write("<code>");
                 renderer.Write(output);
-                renderer.WriteLine("</code>");
+                renderer.Write("</code>");
             }
             catch (Exception ex)
             {
