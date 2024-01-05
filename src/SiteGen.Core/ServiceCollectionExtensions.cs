@@ -1,6 +1,5 @@
 ﻿using Markdig;
 using Markdig.Extensions.AutoLinks;
-using Microsoft.AspNetCore.NodeServices;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using SiteGen.Core.Configuration;
 using SiteGen.Core.Extensions.Markdown.Mermaid;
@@ -22,38 +21,10 @@ public static class ServiceCollectionExtensions
 
         services.ConfigureGenerators();
 
-        services.ConfigureNodeServices();
-
         services.AddOptions<SiteGenSettings>();
 
         services.TryAddSingleton<ISiteMapBuilder, DefaultSiteMapBuilder>();
         services.TryAddSingleton<FileCacheProvider>();
-    }
-
-    public static IServiceCollection ConfigureNodeServices(this IServiceCollection services) => services.ConfigureNodeServices((_) => { });
-
-    public static IServiceCollection ConfigureNodeServices(this IServiceCollection services, Action<NodeServicesOptions> setupAction)
-    {
-        services.AddSingleton(typeof(INodeServices), serviceProvider =>
-        {
-            var fileCache = serviceProvider.GetRequiredService<FileCacheProvider>();
-            
-            var options = new NodeServicesOptions(serviceProvider);
-
-            options.ProjectPath = fileCache.Directory.FullName;// Path.Combine(AppContext.BaseDirectory, "node_modules")
-
-            var path = Environment.GetEnvironmentVariable("PATH");
-
-            var nodePath = Path.Combine(Path.GetTempPath(), "SiteGen", "node");
-
-            Environment.SetEnvironmentVariable("PATH", nodePath + Path.PathSeparator + (Environment.GetEnvironmentVariable("PATH") ?? ""));
-            
-            setupAction(options);
-            
-            return NodeServicesFactory.CreateNodeServices(options);
-        });
-
-        return services;
     }
 
     public static IServiceCollection ConfigureGenerators(this IServiceCollection services)
