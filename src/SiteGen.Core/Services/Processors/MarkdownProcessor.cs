@@ -22,7 +22,7 @@ public class MarkdownProcessor : ISiteNodeProcessor
     {
         if (node.Content.IsEmpty()) return Task.CompletedTask;
 
-        node.Document = Markdown.Parse(node.Content, pipeline);
+        node.Document = Markdig.Markdown.Parse(node.Content, pipeline);
 
         node.HtmlContent = node.Document.ToHtml(pipeline);
         node.ContentPlainText = node.Document.ToPlainText(pipeline);

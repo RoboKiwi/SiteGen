@@ -17,7 +17,7 @@ public class MermaidMarkdownExtension : IMarkdownExtension
     {
         if (pipeline.BlockParsers.Contains<MermaidDiagramParser>()) return;
 
-        // High precendence so we can render before syntax highlighting
+        // High precedence so we can render before syntax highlighting
         pipeline.BlockParsers.Insert(0, new MermaidDiagramParser());
     }
 

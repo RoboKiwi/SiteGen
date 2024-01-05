@@ -29,7 +29,8 @@ services.AddSingleton(configuration);
 services.AddSingleton(settings);
 services.AddTransient<ServeCommand>();
 
-var factory = new DefaultServiceProviderFactory();
+var serviceProviderOptions = new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true };
+var factory = new DefaultServiceProviderFactory(serviceProviderOptions);
 var serviceProvider = factory.CreateServiceProvider(services);
 
 ICommandlet command = default;
@@ -89,7 +90,7 @@ foreach (var item in map)
     Console.WriteLine("{0} => {1}", uri, filename);
 
     var response = await client.GetAsync(uri);
-    response.EnsureSuccessStatusCode();    
+    response.EnsureSuccessStatusCode();
     
     // Get the content
     var contents = await response.Content.ReadAsStringAsync();

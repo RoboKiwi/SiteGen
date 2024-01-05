@@ -66,3 +66,13 @@ dotnet tool install --local SiteGen.Cli
 
 - Launch your website and bind to port :5000
 - Run `dotnet sitegen` to crawl your site and publish the static resources to `/public`
+
+# Services
+
+# Interactive, hosted browser scraping with Playwright
+
+Playwright can be used to dynamically scrape pages and sites and even do things like invoke javascript.
+
+Singleton instances of `IPlaywright` (main Playwright service), and a keyed singleton instance of `IBrowser` (key of `"Chromium"`) are injected.
+
+These hosts are used to dynamically host and invoke syntax highlighters like Monaco Editor and Prism.js.
