@@ -13,15 +13,15 @@ public class PrismHost : IAsyncDisposable
     const string url = "http://127.0.0.1:0";
     readonly DirectoryInfo directory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".prism"));
 
-    IBrowser browser;
     IPage page;
     WebApplication app;
+    static bool isInitialized;
 
     static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-    public PrismHost([FromKeyedServices(nameof(BrowserType.Chromium))]IBrowser browser)
+    public PrismHost(IPage page)
     {
-        this.browser = browser;
+        this.page = page;
 
         var options = new WebApplicationOptions
         {
@@ -45,19 +45,20 @@ public class PrismHost : IAsyncDisposable
 
     public async ValueTask DisposeAsync()
     {
-        await browser.DisposeAsync();
+        await page.CloseAsync();
+        await app.StopAsync();
         await app.DisposeAsync();
     }
 
     public async Task<string> Highlight(string source, string language)
     {
-        if (page == null)
+        if (!isInitialized)
         {
             await semaphore.WaitAsync();
 
             try
             {
-                if (page == null)
+                if (!isInitialized)
                 {
                     // Write resources to the root directory
                     var assembly = Assembly.GetExecutingAssembly();
@@ -72,16 +73,18 @@ public class PrismHost : IAsyncDisposable
                         stream.Flush();
                     }
 
-                    Task.Run(() => app.RunAsync());
-
-                    page = await browser.NewPageAsync();
-
+                    await Task.Run(() => app.StartAsync());
+                                                            
+                    // Get the address that was bound to (random port)
                     var server = app.Services.GetRequiredService<IServer>();
                     var addressFeature = server.Features.Get<IServerAddressesFeature>()!;
+                    var address = addressFeature.Addresses.Single();
 
-                    await page.GotoAsync(addressFeature.Addresses.Single());
+                    await page.GotoAsync(address);
                     await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
                     await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+
+                    isInitialized = true;
                 }
             }
             finally
@@ -90,10 +93,9 @@ public class PrismHost : IAsyncDisposable
             }
         }
 
-        // Load the source
-        var expression = $"Prism.highlight(`{source}`, Prism.languages.{language}, \"{language}\");";
-        var colorized = await page.EvaluateAsync<string>(expression);
-
-        return colorized;
+        // Set the source code
+        return await page.EvaluateAsync<string>($@"(source) => {{
+    return Prism.highlight(source, Prism.languages.{language.ToLowerInvariant()}, ""{language.ToLowerInvariant()}"");
+}}", source);
     }
 }

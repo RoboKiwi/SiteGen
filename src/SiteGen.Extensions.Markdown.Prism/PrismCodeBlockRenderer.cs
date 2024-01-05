@@ -3,14 +3,9 @@ using Markdig.Renderers.Html;
 
 namespace SiteGen.Extensions.Markdown.Prism;
 
-public class PrismCodeBlockRenderer : HtmlObjectRenderer<PrismCodeBlock>
+public class PrismCodeBlockRenderer(PrismHost host) : HtmlObjectRenderer<PrismCodeBlock>
 {
-    readonly PrismHost host;
-
-    public PrismCodeBlockRenderer(PrismHost host)
-    {
-        this.host = host;
-    }
+    readonly PrismHost host = host;
 
     protected override void Write(HtmlRenderer renderer, PrismCodeBlock obj)
     {
@@ -22,16 +17,16 @@ public class PrismCodeBlockRenderer : HtmlObjectRenderer<PrismCodeBlock>
             var lang = obj.Info?.ToString() ?? "text";
             if (string.IsNullOrWhiteSpace(lang)) lang = "text";
 
-            renderer.Write("<pre").WriteAttributes(obj).WriteLine(">");
+            renderer.Write("<pre").WriteAttributes(obj).Write(">");
             
-            var contents = obj.Lines.ToString();
-
             try
             {
-                renderer.Write("<code ").WriteAttributes(obj).WriteLine(">");
+                var contents = obj.Lines.ToString();
                 var output = host.Highlight(contents, lang).GetAwaiter().GetResult();
+
+                renderer.Write("<code>");
                 renderer.Write(output);
-                renderer.WriteLine("</code>");
+                renderer.Write("</code>");
             }
             catch (Exception ex)
             {
