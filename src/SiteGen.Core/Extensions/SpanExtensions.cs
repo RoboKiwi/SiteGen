@@ -5,6 +5,12 @@ namespace SiteGen.Core.Extensions;
 
 public static class SpanExtensions
 {
+    public static ReadOnlySpan<char> StripStart(this ReadOnlySpan<char> value, ReadOnlySpan<char> x)
+    {
+        if (value == null || x == null || x.Length > value.Length) return value;
+        return value.IndexOf(x) == 0 ? value[x.Length..] : value;
+    }
+
     public static bool IsEmpty([NotNullWhen(false)] this string? value)
     {
         return string.IsNullOrWhiteSpace(value);

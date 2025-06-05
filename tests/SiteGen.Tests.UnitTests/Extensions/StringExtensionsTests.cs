@@ -10,5 +10,12 @@ namespace SiteGen.Tests.UnitTests.Extensions
         {
             Assert.Equal(value.AsSpan().WordCount(), expected);
         }
+
+        [Theory]
+        [InlineData("StripstartThis is the rest", "This is the rest")]
+        public void StripStart(string value, string expected)
+        {
+            Assert.Equal(value.AsSpan().StripStart("Stripstart").ToString(), expected);
+        }
     }
 }
