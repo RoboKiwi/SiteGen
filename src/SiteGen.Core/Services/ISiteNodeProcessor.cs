@@ -8,6 +8,6 @@ namespace SiteGen.Core.Services
     /// </summary>
     public interface ISiteNodeProcessor
     {
-        Task ProcessAsync(SiteNode node);
+        Task ProcessAsync(SiteNode node, CancellationToken cancellationToken);
     }
 }

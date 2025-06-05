@@ -6,7 +6,7 @@ namespace SiteGen.Core.Services.Generators;
 
 public class TaxonomyGenerator : INodeGenerator
 {
-    private readonly SiteGenSettings settings;
+    readonly SiteGenSettings settings;
 
     public TaxonomyGenerator(SiteGenSettings settings)
     {
@@ -44,7 +44,7 @@ public class TaxonomyGenerator : INodeGenerator
         return values;
     }
 
-    public Task GenerateAsync(SiteMap nodes)
+    public Task GenerateAsync(SiteMap nodes, CancellationToken cancellationToken)
     {
         foreach(var (key, value) in settings.Taxonomies)
         {

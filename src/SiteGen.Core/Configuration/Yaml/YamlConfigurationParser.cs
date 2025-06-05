@@ -9,12 +9,12 @@ namespace SiteGen.Core.Configuration.Yaml;
 
 public class YamlConfigurationParser
 {
-    private YamlConfigurationParser() { }
+    YamlConfigurationParser() { }
 
-    private readonly Dictionary<string, string?> _data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
-    private readonly Stack<string> _paths = new Stack<string>();
+    readonly Dictionary<string, string?> _data = new Dictionary<string, string?>(StringComparer.OrdinalIgnoreCase);
+    readonly Stack<string> _paths = new Stack<string>();
 
-    private string[] NullValues { get; } = new[] { "~", "null", "" };
+    string[] NullValues { get; } = new[] { "~", "null", "" };
 
     public static IDictionary<string, string?> Parse(Stream input)
         => new YamlConfigurationParser().ParseStream(input);
@@ -42,7 +42,7 @@ public class YamlConfigurationParser
 
     static string Clean(string str) => str?.Replace("_", string.Empty).Replace("-", string.Empty);
 
-    private void Traverse(KeyValuePair<object, object> entry, string path = null)
+    void Traverse(KeyValuePair<object, object> entry, string path = null)
     {
         var fullPath = path == null ? entry.Key.ToString() : ConfigurationPath.Combine(path, entry.Key.ToString());
         if (entry.Value is Dictionary<object, object>)
@@ -68,7 +68,7 @@ public class YamlConfigurationParser
         }
     }
 
-    private void Traverse(YamlNode root, string path = null)
+    void Traverse(YamlNode root, string path = null)
     {
         static string Clean(string str) => str?.Replace("_", string.Empty).Replace("-", string.Empty);
 

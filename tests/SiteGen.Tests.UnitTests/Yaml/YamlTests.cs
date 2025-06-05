@@ -209,7 +209,7 @@ comments:
             return results;
         }
 
-        private YamlToken ReadNextToken(ReadOnlySpan<byte> span)
+        YamlToken ReadNextToken(ReadOnlySpan<byte> span)
         {
             switch (span[0])
             {

@@ -67,10 +67,10 @@ public class PrismHost : IAsyncDisposable
                         var ext = Path.GetExtension(name);
                         var filename = Path.GetExtension(Path.GetFileNameWithoutExtension(name)).TrimStart('.');
 
-                        using var stream = assembly.GetManifestResourceStream(name);
-                        using var destination = File.Open(Path.Combine(directory.FullName, $"{filename}{ext}"), FileMode.Create, FileAccess.Write);
-                        stream.CopyTo(destination);
-                        stream.Flush();
+                        await using var stream = assembly.GetManifestResourceStream(name);
+                        await using var destination = File.Open(Path.Combine(directory.FullName, $"{filename}{ext}"), FileMode.Create, FileAccess.Write);
+                        await stream.CopyToAsync(destination);
+                        await stream.FlushAsync();
                     }
 
                     await Task.Run(() => app.StartAsync());

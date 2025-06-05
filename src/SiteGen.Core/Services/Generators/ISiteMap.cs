@@ -2,7 +2,7 @@
 
 namespace SiteGen.Core.Services.Generators
 {
-    internal interface ISiteMap : ICollection<SiteNode>
+    interface ISiteMap : ICollection<SiteNode>
     {
     }
 }

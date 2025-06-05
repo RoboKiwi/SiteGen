@@ -1,5 +1,4 @@
 ﻿using SiteGen.Core.Models;
-using SiteGen.Core.Services;
 using SiteGen.Core.Services.Processors;
 
 namespace SiteGen.Tests.UnitTests.Processors
@@ -15,7 +14,7 @@ namespace SiteGen.Tests.UnitTests.Processors
                 ContentPlainText = " My content has five words. "
             };
 
-            await processor.ProcessAsync(node);
+            await processor.ProcessAsync(node, CancellationToken.None);
 
             Assert.Equal(5, node.WordCount);
         }

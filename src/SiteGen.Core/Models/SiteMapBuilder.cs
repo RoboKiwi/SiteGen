@@ -9,26 +9,26 @@ namespace SiteGen.Core.Models;
 
 public class SiteMapBuilder : ISiteMapBuilder
 {
-    private List<INodeGenerator> generators;
+    readonly List<INodeGenerator> generators;
 
     public SiteMapBuilder(IServiceProvider services)
     {
         generators = services.GetServices<INodeGenerator>().ToList();
     }
 
-    public async Task<SiteMap> BuildAsync()
+    public async Task<SiteMap> BuildAsync(CancellationToken cancellationToken = default)
     {
         var sitemap = new SiteMap();
 
         foreach(var generator in generators)
         {
-            await generator.GenerateAsync(sitemap);
+            await generator.GenerateAsync(sitemap, cancellationToken);
         }
 
         return sitemap;
     }
 
-    public async Task<IList<SiteNode>> Build(string basePath, CancellationToken cancellationToken = default)
+    public async Task<IList<SiteNode>> Build(string basePath, CancellationToken cancellationToken)
     {
         var directory = new DirectoryInfo(basePath);
         
@@ -98,12 +98,12 @@ public class SiteMapBuilder : ISiteMapBuilder
         return nodes.ToList();
     }
 
-    private Task<SiteNode> BuildAsync(DirectoryInfo directory, CancellationToken cancellationToken)
+    Task<SiteNode> BuildAsync(DirectoryInfo directory, CancellationToken cancellationToken)
     {
         return BuildAsync(directory, true, true, true, cancellationToken);
     }
 
-    private async Task<SiteNode> BuildAsync(DirectoryInfo directory, bool processDirectories, bool processChildren, bool processMetadata, CancellationToken cancellationToken)
+    async Task<SiteNode> BuildAsync(DirectoryInfo directory, bool processDirectories, bool processChildren, bool processMetadata, CancellationToken cancellationToken)
     {
         var node = new SiteNode
         {
@@ -182,7 +182,7 @@ public class SiteMapBuilder : ISiteMapBuilder
         return node;
     }
 
-    private async Task<SiteNode?> BuildNodeAsync(FileInfo file)
+    async Task<SiteNode?> BuildNodeAsync(FileInfo file)
     {
         var filename = file.FullName;
 
@@ -201,50 +201,49 @@ public class SiteMapBuilder : ISiteMapBuilder
         // Load the front matter values
         var frontMatter = FrontMatterParser.ReadBlock(node.Content);
 
-        if (frontMatter != null)
+        if (frontMatter == null) return node;
+
+        var builder = new ConfigurationBuilder();
+
+        using var stream = new MemoryStream(Encoding.UTF8.GetBytes(frontMatter.Item2));
+
+        switch (frontMatter.Item1)
         {
-            var builder = new ConfigurationBuilder();
+            case FrontMatterFormat.None:
+                break;
+            case FrontMatterFormat.Yaml:
+                builder.AddYamlStream(stream);
+                break;
+            case FrontMatterFormat.Json:
+                builder.AddJsonStream(stream);
+                break;
+            case FrontMatterFormat.Toml:
+                builder.AddTomlStream(stream);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
 
-            using var stream = new MemoryStream(Encoding.UTF8.GetBytes(frontMatter.Item2));
+        var root = builder.Build();
+        var dictionary = root.AsEnumerable().ToDictionary(pair => pair.Key, pair => pair.Value);
+        node.FrontMatter = dictionary.ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            switch (frontMatter.Item1)
-            {
-                case FrontMatterFormat.None:
-                    break;
-                case FrontMatterFormat.Yaml:
-                    builder.AddYamlStream(stream);
-                    break;
-                case FrontMatterFormat.Json:
-                    builder.AddJsonStream(stream);
-                    break;
-                case FrontMatterFormat.Toml:
-                    builder.AddTomlStream(stream);
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            var root = builder.Build();
-            var dictionary = root.AsEnumerable().ToDictionary(pair => pair.Key, pair => pair.Value);
-            node.FrontMatter = dictionary.ToDictionary(pair => pair.Key, pair => pair.Value);
-
-            //foreach(var key in skipBinding)
-            //{
-            //    if (!dictionary.ContainsKey(key)) continue;
-            //    dictionary.Remove(key);
-            //}
+        //foreach(var key in skipBinding)
+        //{
+        //    if (!dictionary.ContainsKey(key)) continue;
+        //    dictionary.Remove(key);
+        //}
             
-            try
-            {
-                var bindingRoot = new ConfigurationBuilder().AddInMemoryCollection(dictionary).Build();
-                bindingRoot.Bind(node);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error when loading front matter for {filename}");
-                Console.WriteLine(ex);
-                return null;
-            }
+        try
+        {
+            var bindingRoot = new ConfigurationBuilder().AddInMemoryCollection(dictionary).Build();
+            bindingRoot.Bind(node);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error when loading front matter for {filename}");
+            Console.WriteLine(ex);
+            return null;
         }
 
         return node;

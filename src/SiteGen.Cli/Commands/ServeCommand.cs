@@ -2,9 +2,9 @@
 
 namespace SiteGen.Cli.Commands;
 
-internal class ServeCommand : ICommandlet
+class ServeCommand : ICommandlet
 {
-    private readonly CliArgs settings;
+    readonly CliArgs settings;
 
     public ServeCommand(CliArgs settings)
     {

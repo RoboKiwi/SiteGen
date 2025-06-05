@@ -11,14 +11,14 @@ namespace SiteGen.Core.Services.Processors;
 /// </summary>
 public class MarkdownProcessor : ISiteNodeProcessor
 {
-    private readonly MarkdownPipeline pipeline;
+    readonly MarkdownPipeline pipeline;
 
     public MarkdownProcessor(MarkdownPipeline pipeline)
     {
         this.pipeline = pipeline;
     }
 
-    public Task ProcessAsync(SiteNode node)
+    public Task ProcessAsync(SiteNode node, CancellationToken cancellationToken)
     {
         if (node.Content.IsEmpty()) return Task.CompletedTask;
 

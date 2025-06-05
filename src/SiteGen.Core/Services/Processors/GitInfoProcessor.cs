@@ -9,7 +9,7 @@ namespace SiteGen.Core.Services.Processors;
 /// </summary>
 public class GitInfoProcessor : ISiteNodeProcessor
 {
-    public async Task ProcessAsync(SiteNode node)
+    public async Task ProcessAsync(SiteNode node, CancellationToken cancellationToken)
     {
         var startInfo = new ProcessStartInfo
         {
@@ -22,8 +22,8 @@ public class GitInfoProcessor : ISiteNodeProcessor
         var process = Process.Start(startInfo)!;
         process.WaitForExit(1000);
 
-        var output = process.StandardOutput.ReadToEnd();
-        var error = process.StandardError.ReadToEnd();
+        var output = await process.StandardOutput.ReadToEndAsync(cancellationToken);
+        var error = await process.StandardError.ReadToEndAsync(cancellationToken);
 
         var chunks = output.Trim().Split(' ');
 

@@ -1,6 +1,6 @@
 ﻿namespace SiteGen.Cli;
 
-internal enum Command
+enum Command
 {
     None = 0,
     Build = 1,

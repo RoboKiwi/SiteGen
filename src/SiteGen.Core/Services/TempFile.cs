@@ -2,7 +2,7 @@
 {
     public class TempFile : IDisposable
     {
-        private readonly FileInfo fileInfo;
+        readonly FileInfo fileInfo;
 
         public TempFile(string path)
         {

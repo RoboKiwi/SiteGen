@@ -10,15 +10,15 @@ namespace SiteGen.Core.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly ISiteMapBuilder graph;
-    private readonly MarkdownProcessor processor;
-    private readonly IServiceProvider services;
-    private readonly IList<ISiteNodeProcessor> processors;
+    readonly ILogger<HomeController> logger;
+    readonly ISiteMapBuilder graph;
+    readonly MarkdownProcessor processor;
+    readonly IServiceProvider services;
+    readonly IList<ISiteNodeProcessor> processors;
 
     public HomeController(ILogger<HomeController> logger, ISiteMapBuilder graph, MarkdownProcessor processor, IServiceProvider services, IEnumerable<ISiteNodeProcessor> processors)
     {
-        _logger = logger;
+        this.logger = logger;
         this.graph = graph;
         this.processor = processor;
         this.services = services;
@@ -30,9 +30,9 @@ public class HomeController : Controller
     /// </summary>
     /// <returns></returns>
     [Route("/sitemap.xml")]
-    public async Task<IActionResult> Xml()
+    public async Task<IActionResult> Xml(CancellationToken cancellationToken)
     {
-        var site = await graph.BuildAsync();
+        var site = await graph.BuildAsync(cancellationToken);
 
         var urls = new List<SiteMapXmlUrl>();
 
@@ -49,9 +49,9 @@ public class HomeController : Controller
             OmitXmlDeclaration = false
         };
 
-        using var writer = XmlWriter.Create(sb, settings);
+        await using var writer = XmlWriter.Create(sb, settings);
         SiteMapSerializer.Serialize(writer, urls);
-        writer.Flush();
+        await writer.FlushAsync();
         
         return new ContentResult()
         {
@@ -61,9 +61,9 @@ public class HomeController : Controller
         };
     }
 
-    public async Task<IActionResult> Page()
+    public async Task<IActionResult> Page(CancellationToken cancellationToken)
     {
-        var site = await graph.BuildAsync();
+        var site = await graph.BuildAsync(cancellationToken);
 
         var uri = UrlBuilder.Build((string?)Request.Path.ToUriComponent() ?? "/");
 
@@ -79,7 +79,7 @@ public class HomeController : Controller
         ViewBag.Root = site.First();
 
         // Process Markdown
-        await processor.ProcessAsync(node);
+        await processor.ProcessAsync(node, cancellationToken);
 
         // Run processors
         foreach (var processor in processors)
@@ -88,7 +88,7 @@ public class HomeController : Controller
             {
                 await intializable.InitializeAsync();
             }
-            await processor.ProcessAsync(node);
+            await processor.ProcessAsync(node, cancellationToken);
         }
         
         return View("Page", node);
