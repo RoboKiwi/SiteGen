@@ -5,7 +5,7 @@ namespace SiteGen.Tests.UnitTests.Processors
 {
     public class WordCountProcessorTests
     {
-        [Fact]
+        [TestMethod]
         public async Task ProcessAsync()
         {
             var processor = new WordCountProcessor();
@@ -16,7 +16,7 @@ namespace SiteGen.Tests.UnitTests.Processors
 
             await processor.ProcessAsync(node, CancellationToken.None);
 
-            Assert.Equal(5, node.WordCount);
+            Assert.AreEqual(5, node.WordCount);
         }
     }
 }

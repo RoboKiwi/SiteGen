@@ -4,7 +4,7 @@ namespace SiteGen.Tests.UnitTests.FrontMatter
 {
     public class FrontMatterParserTests
     {
-        [Fact]
+        [TestMethod]
         public void ParseYaml()
         {
             var contents = @"---
@@ -17,13 +17,13 @@ This isn't front matter
 
             var result = FrontMatterParser.ReadBlock(contents);
 
-            Assert.NotNull(result);
-            Assert.Equal(FrontMatterFormat.Yaml, result?.Item1);
-            Assert.Equal(@"title: YAML Title
+            Assert.IsNotNull(result);
+            Assert.AreEqual(FrontMatterFormat.Yaml, result?.Item1);
+            Assert.AreEqual(@"title: YAML Title
 description: ""YAML description""", result?.Item2);
         }
 
-        [Fact]
+        [TestMethod]
         public void ParseJson()
         {
             var contents = @"{
@@ -36,13 +36,13 @@ This isn't front matter
 
             var result = FrontMatterParser.ReadBlock(contents);
 
-            Assert.NotNull(result);
-            Assert.Equal(FrontMatterFormat.Json, result?.Item1);
-            Assert.Equal(@"title: ""YAML Title"",
+            Assert.IsNotNull(result);
+            Assert.AreEqual(FrontMatterFormat.Json, result?.Item1);
+            Assert.AreEqual(@"title: ""YAML Title"",
 description: ""YAML description"",", result?.Item2);
         }
 
-        [Fact]
+        [TestMethod]
         public void ParseToml()
         {
             var contents = @"+++
@@ -55,9 +55,9 @@ This isn't front matter
 
             var result = FrontMatterParser.ReadBlock(contents);
 
-            Assert.NotNull(result);
-            Assert.Equal(FrontMatterFormat.Toml, result?.Item1);
-            Assert.Equal(@"title=""TOML Title""
+            Assert.IsNotNull(result);
+            Assert.AreEqual(FrontMatterFormat.Toml, result?.Item1);
+            Assert.AreEqual(@"title=""TOML Title""
 description=""TOML description""", result?.Item2);
         }
     }

@@ -61,96 +61,96 @@ namespace SiteGen.Tests.UnitTests.Models.Hierarchy
             return flatList.RebuildTree().ToList();
         }
 
-        [Fact]
+        [TestMethod]
         public void Siblings()
         {
             var results = repository.Siblings<Category>(flatList.Single(i => i.Name.Equals("Node1_1"))).ToList();
-            Assert.Equal(1, results.Count);
-            Assert.Equal("Node1_2", results[0].Name);
+            Assert.AreEqual(1, results.Count);
+            Assert.AreEqual("Node1_2", results[0].Name);
 
             results = repository.Siblings<Category>(flatList.Single(i => i.Name.Equals("Node1_1")), TreeListOptions.IncludeSelf).ToList();
-            Assert.Equal(2, results.Count);
-            Assert.Equal("Node1_1", results[0].Name);
-            Assert.Equal("Node1_2", results[1].Name);
+            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual("Node1_1", results[0].Name);
+            Assert.AreEqual("Node1_2", results[1].Name);
 
             results = repository.Siblings<Category>(flatList.Single(i => i.Name.Equals("Node1"))).ToList();
-            Assert.Equal(2, results.Count);
-            Assert.Equal("Node2", results[0].Name);
-            Assert.Equal("Node3", results[1].Name);
+            Assert.AreEqual(2, results.Count);
+            Assert.AreEqual("Node2", results[0].Name);
+            Assert.AreEqual("Node3", results[1].Name);
 
             results = repository.Siblings<Category>(flatList.Single(i => i.Name.Equals("Node1")), TreeListOptions.IncludeSelf).ToList();
-            Assert.Equal(3, results.Count);
-            Assert.Equal("Node1", results[0].Name);
-            Assert.Equal("Node2", results[1].Name);
-            Assert.Equal("Node3", results[2].Name);
+            Assert.AreEqual(3, results.Count);
+            Assert.AreEqual("Node1", results[0].Name);
+            Assert.AreEqual("Node2", results[1].Name);
+            Assert.AreEqual("Node3", results[2].Name);
         }
 
-        [Fact]
+        [TestMethod]
         public void Ancestors()
         {
             var ancestors = repository.Ancestors<Category>().ToList();
-            Assert.Equal(9, ancestors.Count);
-            Assert.Equal("Node1", ancestors[0].Name);
-            Assert.Equal("Node1_1", ancestors[1].Name);
-            Assert.Equal("Node1_1_1", ancestors[2].Name);
-            Assert.Equal("Node1_1_2", ancestors[3].Name);
-            Assert.Equal("Node1_1_2_1", ancestors[4].Name);
-            Assert.Equal("Node1_2", ancestors[5].Name);
-            Assert.Equal("Node2", ancestors[6].Name);
-            Assert.Equal("Node3", ancestors[7].Name);
-            Assert.Equal("Node3_1", ancestors[8].Name);
+            Assert.AreEqual(9, ancestors.Count);
+            Assert.AreEqual("Node1", ancestors[0].Name);
+            Assert.AreEqual("Node1_1", ancestors[1].Name);
+            Assert.AreEqual("Node1_1_1", ancestors[2].Name);
+            Assert.AreEqual("Node1_1_2", ancestors[3].Name);
+            Assert.AreEqual("Node1_1_2_1", ancestors[4].Name);
+            Assert.AreEqual("Node1_2", ancestors[5].Name);
+            Assert.AreEqual("Node2", ancestors[6].Name);
+            Assert.AreEqual("Node3", ancestors[7].Name);
+            Assert.AreEqual("Node3_1", ancestors[8].Name);
         }
 
-        [Fact]
+        [TestMethod]
         public void Ancestors_for_specific_entity()
         {
             var ancestors = repository.Ancestors<Category>(flatList.Single(category => category.Name.Equals("Node1_1_2_1"))).ToList();
-            Assert.Equal(3, ancestors.Count);
-            Assert.Equal("Node1", ancestors[0].Name);
-            Assert.Equal("Node1_1", ancestors[1].Name);
-            Assert.Equal("Node1_1_2", ancestors[2].Name);
+            Assert.AreEqual(3, ancestors.Count);
+            Assert.AreEqual("Node1", ancestors[0].Name);
+            Assert.AreEqual("Node1_1", ancestors[1].Name);
+            Assert.AreEqual("Node1_1_2", ancestors[2].Name);
         }
 
-        [Fact]
+        [TestMethod]
         public void Children()
         {
-            Assert.Equal(9, repository.Count());
+            Assert.AreEqual(9, repository.Count());
             var results = repository.Children<Category>(flatList.Single(i => i.Name.Equals("Node1")));
-            Assert.Equal(2, results.Count());
-            Assert.Equal("Node1_1", results.First().Name);
-            Assert.Equal("Node1_2", results.Skip(1).Single().Name);
+            Assert.AreEqual(2, results.Count());
+            Assert.AreEqual("Node1_1", results.First().Name);
+            Assert.AreEqual("Node1_2", results.Skip(1).Single().Name);
         }
 
-        [Fact]
+        [TestMethod]
         public void Descendants()
         {
-            Assert.Equal(9, repository.Count());
+            Assert.AreEqual(9, repository.Count());
             var results = repository.Descendants<Category>(flatList.Single(i => i.Name.Equals("Node1"))).ToList();
-            Assert.Equal(5, results.Count());
-            Assert.Equal("Node1_1", results[0].Name);
-            Assert.Equal("Node1_1_1", results[1].Name);
-            Assert.Equal("Node1_1_2", results[2].Name);
-            Assert.Equal("Node1_1_2_1", results[3].Name);
-            Assert.Equal("Node1_2", results[4].Name);
+            Assert.AreEqual(5, results.Count());
+            Assert.AreEqual("Node1_1", results[0].Name);
+            Assert.AreEqual("Node1_1_1", results[1].Name);
+            Assert.AreEqual("Node1_1_2", results[2].Name);
+            Assert.AreEqual("Node1_1_2_1", results[3].Name);
+            Assert.AreEqual("Node1_2", results[4].Name);
         }
 
-        [Fact]
+        [TestMethod]
         public void Parent()
         {
-            Assert.Equal(9, repository.Count());
+            Assert.AreEqual(9, repository.Count());
             var node = flatList.Single(i => i.Name.Equals("Node1_1_2_1"));
-            Assert.Equal("Node1_1_2", node.Tree.Parent.Name);
-            Assert.Equal("Node1_1", node.Tree.Parent.Tree.Parent.Name);
-            Assert.Equal("Node1", node.Tree.Parent.Tree.Parent.Tree.Parent.Name);
-            Assert.Null(node.Tree.Parent.Tree.Parent.Tree.Parent.Tree.Parent);
+            Assert.AreEqual("Node1_1_2", node.Tree.Parent.Name);
+            Assert.AreEqual("Node1_1", node.Tree.Parent.Tree.Parent.Name);
+            Assert.AreEqual("Node1", node.Tree.Parent.Tree.Parent.Tree.Parent.Name);
+            Assert.IsNull(node.Tree.Parent.Tree.Parent.Tree.Parent.Tree.Parent);
         }
 
-        [Fact]
+        [TestMethod]
         public void RootNodes()
         {
-            Assert.Equal(9, repository.Count());
+            Assert.AreEqual(9, repository.Count());
             var results = repository.Children<Category>(null);
-            Assert.Equal(3, results.Count());
+            Assert.AreEqual(3, results.Count());
         }
     }
 }

@@ -11,7 +11,7 @@ namespace SiteGen.Extensions.Markdown.Prism;
 public class PrismHost : IAsyncDisposable
 {
     const string url = "http://127.0.0.1:0";
-    readonly DirectoryInfo directory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".prism"));
+    readonly DirectoryInfo directory;
 
     IPage page;
     WebApplication app;
@@ -19,7 +19,7 @@ public class PrismHost : IAsyncDisposable
 
     static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-    public PrismHost(IPage page)
+    public PrismHost(IPage page, DirectoryInfo directory)
     {
         this.page = page;
 
@@ -41,6 +41,13 @@ public class PrismHost : IAsyncDisposable
         app
             .UseDefaultFiles()
             .UseStaticFiles(new StaticFileOptions { ServeUnknownFileTypes = true });
+
+        this.directory = directory;
+    }
+
+    public PrismHost(IPage page) : this(page, new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".prism")))
+    {
+        
     }
 
     public async ValueTask DisposeAsync()

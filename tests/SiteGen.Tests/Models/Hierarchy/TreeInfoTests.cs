@@ -2,51 +2,51 @@ namespace SiteGen.Tests.UnitTests.Models.Hierarchy;
 
 public class TreeInfoTests
 {
-    [Fact]
+    [TestMethod]
     public void Tree_property()
     {
         Category category = new Category();
             
-        Assert.NotNull(category.Tree);
-        Assert.Null(category.Tree.Parent);
-        Assert.NotNull(category.Tree.Children);
-        Assert.Equal(category, category.Tree.Children.Parent);
-        Assert.Equal(0, category.Tree.LeftValue);
-        Assert.Equal(0, category.Tree.RightValue);
-        Assert.Equal(false, category.Tree.IsDirty);
+        Assert.IsNotNull(category.Tree);
+        Assert.IsNull(category.Tree.Parent);
+        Assert.IsNotNull(category.Tree.Children);
+        Assert.AreEqual(category, category.Tree.Children.Parent);
+        Assert.AreEqual(0, category.Tree.LeftValue);
+        Assert.AreEqual(0, category.Tree.RightValue);
+        Assert.AreEqual(false, category.Tree.IsDirty);
     }
 
-    [Fact]
+    [TestMethod]
     public void Gets_marked_dirty_if_left_value_is_changed()
     {
         var category = new Category("Category1");
-        Assert.False(category.Tree.IsDirty);
+        Assert.IsFalse(category.Tree.IsDirty);
 
         category.Tree.LeftValue = 1;
-        Assert.True(category.Tree.IsDirty);
+        Assert.IsTrue(category.Tree.IsDirty);
     }
 
-    [Fact]
+    [TestMethod]
     public void Gets_marked_dirty_if_parent_is_changed()
     {
         var category = new Category("Category1");
-        Assert.False(category.Tree.IsDirty);
+        Assert.IsFalse(category.Tree.IsDirty);
 
         category.Tree.Parent = new Category("Category2");
-        Assert.True(category.Tree.IsDirty);
+        Assert.IsTrue(category.Tree.IsDirty);
     }
 
-    [Fact]
+    [TestMethod]
     public void Gets_marked_dirty_if_right_value_is_changed()
     {
         var category = new Category("Category1");
-        Assert.False(category.Tree.IsDirty);
+        Assert.IsFalse(category.Tree.IsDirty);
 
         category.Tree.RightValue = 1;
-        Assert.True(category.Tree.IsDirty);
+        Assert.IsTrue(category.Tree.IsDirty);
     }
 
-    [Fact]
+    [TestMethod]
     public void Setting_parent_will_remove_the_child_from_its_previous_parents_children()
     {
         var parent = new Category("Parent");
@@ -55,29 +55,29 @@ public class TreeInfoTests
 
         // Add the child to the initial parent
         parent.Tree.Children.Add(child);
-        Assert.Equal(child.Tree.Parent, parent);
-        Assert.Equal(1, parent.Tree.Children.Count);
+        Assert.AreEqual(child.Tree.Parent, parent);
+        Assert.AreEqual(1, parent.Tree.Children.Count);
 
         // Now we'll change the child's parent
         child.Tree.Parent = parent2;
 
         // Child should have been removed from previous parent's children
-        Assert.Equal(0, parent.Tree.Children.Count);
+        Assert.AreEqual(0, parent.Tree.Children.Count);
     }
 
-    [Fact]
+    [TestMethod]
     public void Setting_parent_will_add_the_child_to_its_new_parents_children()
     {
         var parent = new Category("Parent");
         var child = new Category("Child");
 
-        Assert.Equal(0, parent.Tree.Children.Count);
+        Assert.AreEqual(0, parent.Tree.Children.Count);
 
         // Add the child by setting the parent
         child.Tree.Parent = parent;
 
-        Assert.Equal(child.Tree.Parent, parent);
-        Assert.Equal(1, parent.Tree.Children.Count);
+        Assert.AreEqual(child.Tree.Parent, parent);
+        Assert.AreEqual(1, parent.Tree.Children.Count);
     }
 
     /// <summary>
@@ -87,17 +87,17 @@ public class TreeInfoTests
     /// create duplicate entries of the child in the new Parent's Children collection
     /// when manipulating these properties.
     /// </summary>
-    [Fact]
+    [TestMethod]
     public void Adding_child_by_setting_parent_or_adding_to_children_will_not_add_duplicates()
     {
         var parent = new Category("Parent");
         var child = new Category("Child");
 
-        Assert.Equal(0, parent.Tree.Children.Count);
+        Assert.AreEqual(0, parent.Tree.Children.Count);
 
         child.Tree.Parent = parent;
         parent.Tree.Children.Add(child);
 
-        Assert.Equal(1, parent.Tree.Children.Count);
+        Assert.AreEqual(1, parent.Tree.Children.Count);
     }
 }

@@ -5,7 +5,7 @@ namespace SiteGen.Tests.UnitTests.Extensions.Markdown
 {
     public class TableOfContentsTests
     {
-        [Fact]
+        [TestMethod]
         public void TableOfContents()
         {
             var markup = @"# Heading 1
@@ -30,7 +30,7 @@ namespace SiteGen.Tests.UnitTests.Extensions.Markdown
 
             var toc = doc.ToTableOfContents();
 
-            Assert.NotNull(toc);
+            Assert.IsNotNull(toc);
         }
     }
 }

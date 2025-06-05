@@ -6,7 +6,7 @@ namespace SiteGen.Tests.UnitTests.Formatters.SiteMapXml;
 
 public class SiteMapXmlTests
 {
-    [Fact]
+    [TestMethod]
     public void Serialize()
     {
         var sitemap = new List<SiteMapXmlUrl> { new("/", new DateTimeOffset(2022, 01, 02, 03, 04, 05, TimeSpan.FromHours(+12))) };
@@ -26,7 +26,7 @@ public class SiteMapXmlTests
 
         var xml = sb.ToString();
 
-        Assert.Equal(@"<?xml version=""1.0"" encoding=""utf-16"" standalone=""yes""?>
+        Assert.AreEqual(@"<?xml version=""1.0"" encoding=""utf-16"" standalone=""yes""?>
 <urlset xmlns=""http://www.sitemaps.org/schemas/sitemap/0.9"">
 <url>
 <loc>/</loc>

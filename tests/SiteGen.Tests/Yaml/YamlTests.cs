@@ -14,7 +14,7 @@ namespace SiteGen.Tests.UnitTests.Yaml
 {
     public class YamlTests
     {
-        [Fact]
+        [TestMethod]
         public void Test()
         {
             //var yaml = @"--- !<tag:clarkevans.com,2002:invoice>
@@ -57,7 +57,7 @@ comments:
 
             //var values = YamlReader.Read(bytes.AsSpan()).ToDictionary(pair => pair.Key, pair => pair.Value);
 
-            Assert.Equal("34843", values["invoice"]);
+            Assert.AreEqual("34843", values["invoice"]);
         }
     }
 

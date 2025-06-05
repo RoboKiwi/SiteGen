@@ -9,7 +9,8 @@ namespace SiteGen.Tests.Extensions.Markdown
         [TestMethod]
         public async Task Javascript()
         {
-            await using var host = new PrismHost(Page);
+            var directory = new DirectoryInfo(TestContext.DeploymentDirectory);
+            await using var host = new PrismHost(Page, directory);
             var result = await host.Highlight("const test=true;", "javascript");
             Assert.AreEqual(@"<span class=""token keyword"">const</span> test<span class=""token operator"">=</span><span class=""token boolean"">true</span><span class=""token punctuation"">;</span>", result);
         }
