@@ -1,10 +1,9 @@
-﻿namespace SiteGen.Core.Models.Pagination
+﻿namespace SiteGen.Core.Models.Pagination;
+
+public static class PaginateExtensions
 {
-    public static class PaginateExtensions
+    public static PaginatedCollection<T> Paginate<T>(this IEnumerable<T> values)
     {
-        public static PaginatedCollection<T> Paginate<T>(this IEnumerable<T> values)
-        {
-            return new PaginatedCollection<T>(values);
-        }
+        return new PaginatedCollection<T>(values);
     }
 }

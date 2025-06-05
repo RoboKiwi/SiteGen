@@ -29,7 +29,7 @@ public class PrismCodeBlockParser : FencedBlockParserBase<PrismCodeBlock>
         return block;
     }
 
-    private bool PrismCodeInfoParser(BlockProcessor state, ref StringSlice line, IFencedBlock fenced, char openingCharacter)
+    bool PrismCodeInfoParser(BlockProcessor state, ref StringSlice line, IFencedBlock fenced, char openingCharacter)
     {
         var matches = DefaultInfoParser(state, ref line, fenced, openingCharacter);
         if (!matches) return false;

@@ -2,5 +2,5 @@
 
 public interface ISiteMapBuilder
 {
-    Task<SiteMap> BuildAsync();
+    Task<SiteMap> BuildAsync(CancellationToken cancellationToken);
 }

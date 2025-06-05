@@ -5,7 +5,7 @@ namespace SiteGen.Core.Models;
 
 public class DirectorySiteNode : SiteNode
 {
-    private readonly DirectoryInfo directory;
+    readonly DirectoryInfo directory;
 
     public DirectorySiteNode(DirectoryInfo directory, DirectoryInfo baseDirectory)
     {

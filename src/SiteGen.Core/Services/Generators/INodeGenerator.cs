@@ -2,5 +2,5 @@
 
 public interface INodeGenerator
 {
-    Task GenerateAsync(SiteMap nodes);
+    Task GenerateAsync(SiteMap nodes, CancellationToken cancellationToken = default);
 }

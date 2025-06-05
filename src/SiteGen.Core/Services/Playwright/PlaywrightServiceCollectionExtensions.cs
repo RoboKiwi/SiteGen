@@ -1,5 +1,6 @@
 ﻿using Microsoft.Playwright;
 
+// ReSharper disable once CheckNamespace
 namespace SiteGen.Core;
 
 public static class PlaywrightServiceCollectionExtensions
@@ -12,18 +13,18 @@ public static class PlaywrightServiceCollectionExtensions
     /// <returns></returns>
     public static IServiceCollection ConfigurePlaywright(this IServiceCollection services)
     {
-        services.AddSingleton((sp) =>
-        {
-            return Playwright.CreateAsync().GetAwaiter().GetResult();
-        });
+        // IPlaywright singleton factory
+        services.AddSingleton(_ => Playwright.CreateAsync().GetAwaiter().GetResult());
 
-        services.AddKeyedSingleton(nameof(BrowserType.Chromium), (sp, key) =>
+        // IBrowser singleton for Chromium
+        services.AddKeyedSingleton(nameof(BrowserType.Chromium), (sp, _) =>
         {
             var playwright = sp.GetRequiredService<IPlaywright>();
             return playwright.Chromium.LaunchAsync().GetAwaiter().GetResult();
         });
 
-        services.AddTransient((sp) => {
+        // IPage transient factory for Chromium browser
+        services.AddTransient(sp => {
             var browser = sp.GetRequiredKeyedService<IBrowser>(nameof(BrowserType.Chromium));
             return browser.NewPageAsync().GetAwaiter().GetResult();
         });

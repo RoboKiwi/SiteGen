@@ -29,7 +29,7 @@ public class PygmentsBlockParser : FencedBlockParserBase<PygmentsBlock>
         return block;
     }
 
-    private bool PygmentsInfoParser(BlockProcessor state, ref StringSlice line, IFencedBlock fenced, char openingCharacter)
+    bool PygmentsInfoParser(BlockProcessor state, ref StringSlice line, IFencedBlock fenced, char openingCharacter)
     {
         var matches = DefaultInfoParser(state, ref line, fenced, openingCharacter);
         if (!matches) return false;

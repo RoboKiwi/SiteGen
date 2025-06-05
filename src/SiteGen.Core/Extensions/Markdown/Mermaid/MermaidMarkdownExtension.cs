@@ -6,7 +6,7 @@ namespace SiteGen.Core.Extensions.Markdown.Mermaid;
 
 public class MermaidMarkdownExtension : IMarkdownExtension
 {
-    private readonly FileCacheProvider cache;
+    readonly FileCacheProvider cache;
 
     public MermaidMarkdownExtension(FileCacheProvider cache)
     {

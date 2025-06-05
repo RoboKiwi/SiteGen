@@ -11,7 +11,7 @@ namespace SiteGen.Extensions.Markdown.Prism;
 public class PrismHost : IAsyncDisposable
 {
     const string url = "http://127.0.0.1:0";
-    readonly DirectoryInfo directory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".prism"));
+    readonly DirectoryInfo directory;
 
     IPage page;
     WebApplication app;
@@ -19,7 +19,7 @@ public class PrismHost : IAsyncDisposable
 
     static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-    public PrismHost(IPage page)
+    public PrismHost(IPage page, DirectoryInfo directory)
     {
         this.page = page;
 
@@ -41,6 +41,13 @@ public class PrismHost : IAsyncDisposable
         app
             .UseDefaultFiles()
             .UseStaticFiles(new StaticFileOptions { ServeUnknownFileTypes = true });
+
+        this.directory = directory;
+    }
+
+    public PrismHost(IPage page) : this(page, new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".prism")))
+    {
+        
     }
 
     public async ValueTask DisposeAsync()
@@ -67,10 +74,10 @@ public class PrismHost : IAsyncDisposable
                         var ext = Path.GetExtension(name);
                         var filename = Path.GetExtension(Path.GetFileNameWithoutExtension(name)).TrimStart('.');
 
-                        using var stream = assembly.GetManifestResourceStream(name);
-                        using var destination = File.Open(Path.Combine(directory.FullName, $"{filename}{ext}"), FileMode.Create, FileAccess.Write);
-                        stream.CopyTo(destination);
-                        stream.Flush();
+                        await using var stream = assembly.GetManifestResourceStream(name);
+                        await using var destination = File.Open(Path.Combine(directory.FullName, $"{filename}{ext}"), FileMode.Create, FileAccess.Write);
+                        await stream.CopyToAsync(destination);
+                        await stream.FlushAsync();
                     }
 
                     await Task.Run(() => app.StartAsync());

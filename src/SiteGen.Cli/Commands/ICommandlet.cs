@@ -1,6 +1,6 @@
 ﻿namespace SiteGen.Cli.Commands;
 
-internal interface ICommandlet
+interface ICommandlet
 {
     Task ExecuteAsync();
 }
