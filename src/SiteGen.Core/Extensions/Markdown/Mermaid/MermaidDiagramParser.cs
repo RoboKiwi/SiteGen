@@ -28,7 +28,7 @@ public class MermaidDiagramParser : FencedBlockParserBase<MermaidBlock>
         return block;
     }
 
-    private bool MermaidInfoParser(BlockProcessor state, ref StringSlice line, IFencedBlock fenced, char openingCharacter)
+    bool MermaidInfoParser(BlockProcessor state, ref StringSlice line, IFencedBlock fenced, char openingCharacter)
     {
         return line.MatchLowercase("mermaid");
     }

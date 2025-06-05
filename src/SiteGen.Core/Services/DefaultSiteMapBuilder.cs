@@ -6,12 +6,12 @@ namespace SiteGen.Core.Services;
 
 public class DefaultSiteMapBuilder : ISiteMapBuilder
 {
-    private MarkdownGenerator markdownGenerator;
-    private readonly FrontMatterProcessor frontMatterProcessor;
-    private readonly TaxonomyGenerator taxonomyGenerator;
-    private readonly SiteMap map = new SiteMap();
-    private bool isInitialized = false;
-    private readonly SemaphoreSlim semaphore = new SemaphoreSlim(1);
+    MarkdownGenerator markdownGenerator;
+    readonly FrontMatterProcessor frontMatterProcessor;
+    readonly TaxonomyGenerator taxonomyGenerator;
+    readonly SiteMap map = new();
+    bool isInitialized;
+    readonly SemaphoreSlim semaphore = new(1);
 
     public DefaultSiteMapBuilder(MarkdownGenerator generator, FrontMatterProcessor frontMatterProcessor, TaxonomyGenerator taxonomyGenerator)
     {
@@ -20,15 +20,16 @@ public class DefaultSiteMapBuilder : ISiteMapBuilder
         this.taxonomyGenerator = taxonomyGenerator;
     }
 
-    public async Task<SiteMap> BuildAsync()
+    public async Task<SiteMap> BuildAsync(CancellationToken cancellationToken)
     {
         if (isInitialized) return map;
-        await semaphore.WaitAsync();
+        await semaphore.WaitAsync(cancellationToken);
         if (isInitialized) return map;
 
         try
         {
-            await markdownGenerator.GenerateAsync(map);
+            cancellationToken.ThrowIfCancellationRequested();
+            await markdownGenerator.GenerateAsync(map, cancellationToken);
 
             // Should be one root node
             var root = map.Single();
@@ -36,7 +37,7 @@ public class DefaultSiteMapBuilder : ISiteMapBuilder
             // Parse the front matter for all the content files, and get the flat list of nodes while we're at it.
             foreach (var node in root.FlattenTree())
             {
-                await frontMatterProcessor.ProcessAsync(node);
+                await frontMatterProcessor.ProcessAsync(node, cancellationToken);
                 map.Add(node);
             }
 
@@ -44,7 +45,7 @@ public class DefaultSiteMapBuilder : ISiteMapBuilder
             map.RebuildTree();
 
             // Now enhance with additional generator for taxonomy
-            await taxonomyGenerator.GenerateAsync(map);
+            await taxonomyGenerator.GenerateAsync(map, cancellationToken);
 
             // Rebuild again unfortunately
             map.RebuildTree();

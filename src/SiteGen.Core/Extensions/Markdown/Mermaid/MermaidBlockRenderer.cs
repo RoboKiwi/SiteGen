@@ -8,7 +8,7 @@ namespace SiteGen.Core.Extensions.Markdown.Mermaid;
 
 public class MermaidBlockRenderer : HtmlObjectRenderer<MermaidBlock>
 {
-    private FileCacheProvider cache;
+    FileCacheProvider cache;
 
     static readonly TimeSpan timeout = TimeSpan.FromSeconds(10);
 

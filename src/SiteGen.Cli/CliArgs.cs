@@ -1,6 +1,6 @@
 ﻿namespace SiteGen.Cli;
 
-internal class CliArgs
+class CliArgs
 {
     /// <summary>
     /// The path where static content is published and served from.

@@ -14,7 +14,7 @@ public class FrontMatterProcessor : ISiteNodeProcessor
 {
     static readonly IList<string> skipBinding = new List<string> { "guid", "type" };
 
-    public Task ProcessAsync(SiteNode node)
+    public Task ProcessAsync(SiteNode node, CancellationToken cancellationToken)
     {
         // Load the front matter values
         var frontMatter = FrontMatterParser.ReadBlock(node.Content);

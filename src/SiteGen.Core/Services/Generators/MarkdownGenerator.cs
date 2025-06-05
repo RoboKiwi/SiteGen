@@ -8,8 +8,8 @@ namespace SiteGen.Core.Services.Generators;
 
 public class MarkdownGenerator : INodeGenerator
 {
-    private readonly SiteGenSettings settings;
-    private readonly ILogger<MarkdownGenerator> logger;
+    readonly SiteGenSettings settings;
+    readonly ILogger<MarkdownGenerator> logger;
 
     public MarkdownGenerator(SiteGenSettings settings, ILogger<MarkdownGenerator> logger)
     {
@@ -17,7 +17,7 @@ public class MarkdownGenerator : INodeGenerator
         this.logger = logger;
     }
 
-    public async Task GenerateAsync(SiteMap nodes)
+    public async Task GenerateAsync(SiteMap nodes, CancellationToken cancellationToken)
     {
         foreach(var path in settings.ContentPaths)
         {
