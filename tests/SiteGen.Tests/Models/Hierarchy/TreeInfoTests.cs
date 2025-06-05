@@ -1,5 +1,6 @@
-namespace SiteGen.Tests.UnitTests.Models.Hierarchy;
+namespace SiteGen.Tests.Models.Hierarchy;
 
+[TestClass]
 public class TreeInfoTests
 {
     [TestMethod]

@@ -1,7 +1,6 @@
-﻿namespace SiteGen.Core.Services.Processors
+﻿namespace SiteGen.Core.Services.Processors;
+
+interface IInitializable
 {
-    interface IInitializable
-    {
-        Task InitializeAsync();
-    }
+    Task InitializeAsync();
 }

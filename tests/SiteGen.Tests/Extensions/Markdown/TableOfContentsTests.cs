@@ -1,14 +1,15 @@
 ﻿using Markdig;
 using SiteGen.Core.Extensions.Markdown;
 
-namespace SiteGen.Tests.UnitTests.Extensions.Markdown
+namespace SiteGen.Tests.Extensions.Markdown;
+
+[TestClass]
+public class TableOfContentsTests
 {
-    public class TableOfContentsTests
+    [TestMethod]
+    public void TableOfContents()
     {
-        [TestMethod]
-        public void TableOfContents()
-        {
-            var markup = @"# Heading 1
+        var markup = @"# Heading 1
 
 ## Heading 2
 
@@ -22,15 +23,14 @@ namespace SiteGen.Tests.UnitTests.Extensions.Markdown
 
 ### Heading 3";
 
-            var pipeline = new MarkdownPipelineBuilder()
+        var pipeline = new MarkdownPipelineBuilder()
             //.UseAdvancedExtensions()
             .Build();
 
-            var doc = Markdig.Markdown.Parse(markup, pipeline);
+        var doc = Markdig.Markdown.Parse(markup, pipeline);
 
-            var toc = doc.ToTableOfContents();
+        var toc = doc.ToTableOfContents();
 
-            Assert.IsNotNull(toc);
-        }
+        Assert.IsNotNull(toc);
     }
 }

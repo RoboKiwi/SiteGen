@@ -1,14 +1,12 @@
-﻿using SiteGen.Core.Extensions;
+﻿namespace SiteGen.Tests.Extensions;
 
-namespace SiteGen.Tests.UnitTests.Extensions
+[TestClass]
+public class StringExtensionsTests
 {
-    public class StringExtensionsTests
+    [DataTestMethod]
+    [DataRow("  This has four words. ", 4)]
+    public void WordCount(string value, int expected)
     {
-        [DataTestMethod]
-        [DataRow("  This has four words. ", 4)]
-        public void WordCount(string value, int expected)
-        {
-            Assert.AreEqual(value.AsSpan().WordCount(), expected);
-        }
+        Assert.AreEqual(value.AsSpan().WordCount(), expected);
     }
 }

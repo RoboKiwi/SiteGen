@@ -1,23 +1,22 @@
-namespace SiteGen.Core.Models.Hierarchy
+namespace SiteGen.Core.Models.Hierarchy;
+
+/// <summary>
+/// Options for when querying the tree.
+/// </summary>
+public enum TreeListOptions
 {
     /// <summary>
-    /// Options for when querying the tree.
+    /// No options.
     /// </summary>
-    public enum TreeListOptions
-    {
-        /// <summary>
-        /// No options.
-        /// </summary>
-        None = 0,
+    None = 0,
 
-        /// <summary>
-        /// Return the node being queried on in the results.
-        /// </summary>
-        IncludeSelf,
+    /// <summary>
+    /// Return the node being queried on in the results.
+    /// </summary>
+    IncludeSelf,
 
-        /// <summary>
-        /// Exclude the node being queried on from the results.
-        /// </summary>
-        ExcludeSelf
-    }
+    /// <summary>
+    /// Exclude the node being queried on from the results.
+    /// </summary>
+    ExcludeSelf
 }

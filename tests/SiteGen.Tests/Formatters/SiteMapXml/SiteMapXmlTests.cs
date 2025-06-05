@@ -2,8 +2,9 @@ using System.Text;
 using System.Xml;
 using SiteGen.Core.Formatters.SiteMapXml;
 
-namespace SiteGen.Tests.UnitTests.Formatters.SiteMapXml;
+namespace SiteGen.Tests.Formatters.SiteMapXml;
 
+[TestClass]
 public class SiteMapXmlTests
 {
     [TestMethod]
