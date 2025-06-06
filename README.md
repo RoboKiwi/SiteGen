@@ -1,3 +1,5 @@
+[![Release to NuGet.org](https://github.com/RoboKiwi/SiteGen/actions/workflows/release-to-nuget.yml/badge.svg)](https://github.com/RoboKiwi/SiteGen/actions/workflows/release-to-nuget.yml)
+
 # SiteGen
 
 SiteGen is a .NET-based static site generator.
