@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TypeScriptToolsDisable>true</TypeScriptToolsDisable>
+        <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)node_modules\**;$(ProjectDir)dist\**</DefaultItemExcludes>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
+    </ItemGroup>
+
+    <Target Name="BuildPrism" BeforeTargets="PrepareForBuild">
+        <PropertyGroup>
+            <_NodeArgs Condition="'$(_NodeArgs)' == '' AND '$(Configuration)' == 'Release'">--mode=production</_NodeArgs>
+            <_NodeArgs Condition="'$(_NodeArgs)' == ''">--mode=development</_NodeArgs>
+        </PropertyGroup>
+
+        <Exec WorkingDirectory="$(ProjectDir)" Command="npm install" />
+        <Exec WorkingDirectory="$(ProjectDir)" Command="npm run build $(_NodeArgs)" />
+        
+        <ItemGroup>
+            <EmbeddedResource Include="$(ProjectDir)dist\**" Exclude="*.txt"/>
+        </ItemGroup>
+    </Target>
+</Project>
