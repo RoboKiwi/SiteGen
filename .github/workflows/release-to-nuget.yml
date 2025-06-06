@@ -1,6 +1,7 @@
 name: Release to NuGet.org
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - master
