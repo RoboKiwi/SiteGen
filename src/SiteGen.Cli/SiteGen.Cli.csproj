@@ -6,7 +6,6 @@
     <ToolCommandName>sitegen</ToolCommandName>
     <Title>SiteGen</Title>
     <FileVersion></FileVersion>
-    <Version>0.1.3-alpha</Version>
   </PropertyGroup>
 
   <ItemGroup>

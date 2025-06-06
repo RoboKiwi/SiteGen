@@ -4,6 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
+    <Version>0.1.8-alpha</Version>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="SiteGen.Tests"></InternalsVisibleTo>
