@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteGen.Extensions.Markdown
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SiteGen.Tests", "tests\SiteGen.Tests\SiteGen.Tests.csproj", "{EA6501B2-937C-451E-9CEA-872AD9B1F15B}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SiteGen.Extensions.Markdown.Monaco", "src\SiteGen.Extensions.Markdown.Monaco\SiteGen.Extensions.Markdown.Monaco.csproj", "{17FEE8E7-1E95-4649-9C1A-6C148E60C11A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EA6501B2-937C-451E-9CEA-872AD9B1F15B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA6501B2-937C-451E-9CEA-872AD9B1F15B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA6501B2-937C-451E-9CEA-872AD9B1F15B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{17FEE8E7-1E95-4649-9C1A-6C148E60C11A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{17FEE8E7-1E95-4649-9C1A-6C148E60C11A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{17FEE8E7-1E95-4649-9C1A-6C148E60C11A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{17FEE8E7-1E95-4649-9C1A-6C148E60C11A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
