@@ -12,15 +12,20 @@ namespace SiteGen.Extensions.Markdown.Monaco;
 public class MonacoHost : IAsyncDisposable
 {
     const string url = "http://127.0.0.1:0";
-    readonly DirectoryInfo directory = new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".monaco"));
+    readonly DirectoryInfo directory;
     IPage page;
     WebApplication app;
     static bool isInitialized;
 
     static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-    public MonacoHost(IPage page)
+    public MonacoHost(IPage page) : this(page, new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".monaco")))
     {
+    }
+
+    public MonacoHost(IPage page, DirectoryInfo directory)
+    {
+        this.directory = directory;
         this.page = page;
 
         var options = new WebApplicationOptions
@@ -92,6 +97,8 @@ public class MonacoHost : IAsyncDisposable
                     await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
                     await page.WaitForLoadStateAsync(LoadState.Load);
 
+                    //await page.PauseAsync();
+
                     isInitialized = true;
                 }
             }
@@ -103,7 +110,7 @@ public class MonacoHost : IAsyncDisposable
 
         // Set the source code
         return await page.EvaluateAsync<string>($@"(source) => {{
-    return monaco.editor.colorize(source, ""{language.ToLowerInvariant()}\\"", {{}});
+    return colorize(source, ""{language.ToLowerInvariant()}"", {{}});
 }}", source);
     }
 }

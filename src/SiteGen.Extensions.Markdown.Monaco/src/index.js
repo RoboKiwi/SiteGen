@@ -136,18 +136,18 @@ self.MonacoEnvironment = {
 	globalAPI: true,
 
 	getWorkerUrl: function (moduleId, label) {
-		// if (label === 'json') {
-		// 	return './json.worker.bundle.js';
-		// }
-		// if (label === 'css' || label === 'scss' || label === 'less') {
-		// 	return './css.worker.bundle.js';
-		// }
-		// if (label === 'html' || label === 'handlebars' || label === 'razor') {
-		// 	return './html.worker.bundle.js';
-		// }
-		// if (label === 'typescript' || label === 'javascript') {
-		// 	return './ts.worker.bundle.js';
-		// }
+		 if (label === 'json') {
+		 	return './json.worker.bundle.js';
+		 }
+		 if (label === 'css' || label === 'scss' || label === 'less') {
+		 	return './css.worker.bundle.js';
+		 }
+		 if (label === 'html' || label === 'handlebars' || label === 'razor') {
+		 	return './html.worker.bundle.js';
+		 }
+		 if (label === 'typescript' || label === 'javascript') {
+		 	return './ts.worker.bundle.js';
+		 }
 		return './editor.worker.bundle.js';
 	}
 };
@@ -169,3 +169,26 @@ monaco.editor.create(document.getElementById('container'), {
 	].join('\n'),
 	language: 'python'
 });
+
+// Expose a colorize function that ensures language and theme are ready
+window.colorize = async function(source, language) {
+    // Wait for the language to be registered
+    function waitForLanguage(lang, timeout = 2000) {
+        return new Promise((resolve, reject) => {
+            const start = Date.now();
+            function check() {
+                if (monaco.languages.getLanguages().some(l => l.id === lang)) {
+                    resolve();
+                } else if (Date.now() - start > timeout) {
+                    reject(new Error('Language not registered: ' + lang));
+                } else {
+                    setTimeout(check, 20);
+                }
+            }
+            check();
+        });
+    }
+    await waitForLanguage(language);
+    //monaco.editor.setTheme('vs');
+    return await monaco.editor.colorize(source, language, {});
+};
