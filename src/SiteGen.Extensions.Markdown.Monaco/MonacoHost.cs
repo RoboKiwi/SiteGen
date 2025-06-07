@@ -55,15 +55,31 @@ public class MonacoHost : IAsyncDisposable
         await app.DisposeAsync();
     }
 
+    public async Task<string> GetCss(string theme)
+    {
+        await Initialize();
+        return await page.EvaluateAsync<string>($@"(theme) => {{return getThemeCss(theme);}}", theme);
+    }
+
     public async Task<string> Highlight(string source, string language)
     {
-        if (!isInitialized)
+        await Initialize();
+
+        // Set the source code
+        return await page.EvaluateAsync<string>($@"(source) => {{
+    return colorize(source, ""{language.ToLowerInvariant()}"", {{}});
+}}", source);
+    }
+
+    private async Task Initialize()
+    {
+        if(!isInitialized)
         {
             await semaphore.WaitAsync();
 
             try
             {
-                if (!isInitialized)
+                if(!isInitialized)
                 {
                     // Purge the directory
                     directory.Delete(true);
@@ -74,15 +90,15 @@ public class MonacoHost : IAsyncDisposable
 
                     // Write resources to the root directory
                     var assembly = Assembly.GetExecutingAssembly();
-                    foreach (var name in assembly.GetManifestResourceNames())
+                    foreach(var name in assembly.GetManifestResourceNames())
                     {
                         var ext = Path.GetExtension(name);
                         var filename = Path.GetFileNameWithoutExtension(name.AsSpan().StripStart(resourceNameBase.AsSpan()).ToString()).TrimStart('.');
 
                         using var stream = assembly.GetManifestResourceStream(name);
                         using var destination = File.Open(Path.Combine(directory.FullName, $"{filename}{ext}"), FileMode.Create, FileAccess.Write);
-                        stream.CopyTo(destination);
-                        stream.Flush();
+                        await stream.CopyToAsync(destination);
+                        await stream.FlushAsync();
                     }
 
                     await Task.Run(() => app.StartAsync());
@@ -107,10 +123,5 @@ public class MonacoHost : IAsyncDisposable
                 semaphore.Release();
             }
         }
-
-        // Set the source code
-        return await page.EvaluateAsync<string>($@"(source) => {{
-    return colorize(source, ""{language.ToLowerInvariant()}"", {{}});
-}}", source);
     }
 }

@@ -152,21 +152,8 @@ self.MonacoEnvironment = {
 	}
 };
 
-monaco.editor.create(document.getElementById('container'), {
-	value: [
-		'from banana import *',
-		'',
-		'class Monkey:',
-		'	# Bananas the monkey can eat.',
-		'	capacity = 10',
-		'	def eat(self, N):',
-		"		'''Make the monkey eat N bananas!'''",
-		'		capacity = capacity - N*banana.size',
-		'',
-		'	def feeding_frenzy(self):',
-		'		eat(9.25)',
-		'		return "Yum yum"'
-	].join('\n'),
+window.editor = monaco.editor.create(document.getElementById('container'), {
+	value: [''].join('\n'),
 	language: 'python'
 });
 
@@ -189,6 +176,20 @@ window.colorize = async function(source, language) {
         });
     }
     await waitForLanguage(language);
-    //monaco.editor.setTheme('vs');
     return await monaco.editor.colorize(source, language, {});
+};
+
+// Gets the CSS for the specified theme.
+// vscode/src/vs/editor/standalone/browser/standaloneThemeService.ts has related code, but it is not exposed in the API
+window.getThemeCss = async function (theme) {
+
+	// Set the theme
+    window.editor.updateOptions({ theme: theme });
+
+	// Ideally we could listen for _onColorThemeChange to know when the CSS has finished loading
+	// For now, give it a few seconds to apply the theme
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // allCSS includes codiconCSS and themeCSS; maybe we just use themeCSS?
+    return window.editor._themeService._allCSS;
 };
