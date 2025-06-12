@@ -5,7 +5,6 @@ using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
-using SiteGen.Core.Extensions;
 
 namespace SiteGen.Extensions.Markdown.Monaco;
 
@@ -55,7 +54,7 @@ public class MonacoHost : IAsyncDisposable
         await app.DisposeAsync();
     }
 
-    public async Task<string> GetCss(string theme)
+    public async Task<string> GetCssAsync(string theme)
     {
         await Initialize();
         return await page.EvaluateAsync<string>($@"(theme) => {{return getThemeCss(theme);}}", theme);

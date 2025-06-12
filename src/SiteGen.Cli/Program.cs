@@ -4,6 +4,8 @@ using SiteGen.Core.Formatters.SiteMapXml;
 using SiteGen.Cli;
 using SiteGen.Cli.Commands;
 using System.Diagnostics;
+using SiteGen.Core;
+using Microsoft.Extensions.Logging;
 
 var configBuilder = new ConfigurationBuilder();
 configBuilder.AddEnvironmentVariables();
@@ -25,9 +27,19 @@ var settings = new CliArgs
 configuration.Bind(settings);
 
 var services = new ServiceCollection();
+
+services.AddLogging(builder => {
+    builder.AddConsole().SetMinimumLevel(LogLevel.Information);
+});
+
 services.AddSingleton(configuration);
 services.AddSingleton(settings);
 services.AddTransient<ServeCommand>();
+services.AddTransient<SyntaxHighlightingCss>();
+
+services.ConfigurePlaywright();
+
+services.AddMonaco();
 
 var serviceProviderOptions = new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true };
 var factory = new DefaultServiceProviderFactory(serviceProviderOptions);
@@ -43,6 +55,9 @@ switch (settings.Command)
         break;
     case Command.Serve:
         command = serviceProvider.GetRequiredService<ServeCommand>();
+        break;
+    case Command.ExportCss:
+        command = serviceProvider.GetRequiredService<SyntaxHighlightingCss>();
         break;
     default:
         break;

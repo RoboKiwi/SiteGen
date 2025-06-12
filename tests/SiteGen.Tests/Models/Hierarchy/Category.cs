@@ -18,7 +18,7 @@ public class Category : ITreeEntity<Category>, IEntity
 
     public TreeInfo<Category> Tree { get; set; }
 
-    public string Name { get; set; }
+    public string? Name { get; set; }
 
     public Guid Guid { get; set; }
 

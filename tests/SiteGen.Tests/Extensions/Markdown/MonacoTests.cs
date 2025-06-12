@@ -37,7 +37,7 @@ public class MonacoTests : PageTest
     [TestMethod]
     public async Task MonacoGetCss()
     {        
-        var result = await Host.GetCss("vs-dark");
+        var result = await Host.GetCssAsync("vs-dark");
         Assert.IsTrue(result.Contains("--vscode-editor-background: #1e1e1e;"));
     }
 }
