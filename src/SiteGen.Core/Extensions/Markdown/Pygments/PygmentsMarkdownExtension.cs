@@ -9,7 +9,7 @@ public class PygmentsMarkdownExtension : IMarkdownExtension
     {
         if (pipeline.BlockParsers.Contains<PygmentsBlockParser>()) return;
 
-        // High precendence so we can render before syntax highlighting
+        // High precedence so we can render before syntax highlighting
         pipeline.BlockParsers.Insert(0, new PygmentsBlockParser());
     }
 

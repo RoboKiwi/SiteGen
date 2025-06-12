@@ -19,7 +19,7 @@
         <Exec WorkingDirectory="$(ProjectDir)" Command="npm run build $(_NodeArgs)" />
         
         <ItemGroup>
-            <EmbeddedResource Include="$(ProjectDir)dist\**" Exclude="*.txt"/>
+            <EmbeddedResource Include="$(ProjectDir)dist\**" Exclude="*.txt" />
         </ItemGroup>
     </Target>
 </Project>

@@ -136,36 +136,60 @@ self.MonacoEnvironment = {
 	globalAPI: true,
 
 	getWorkerUrl: function (moduleId, label) {
-		// if (label === 'json') {
-		// 	return './json.worker.bundle.js';
-		// }
-		// if (label === 'css' || label === 'scss' || label === 'less') {
-		// 	return './css.worker.bundle.js';
-		// }
-		// if (label === 'html' || label === 'handlebars' || label === 'razor') {
-		// 	return './html.worker.bundle.js';
-		// }
-		// if (label === 'typescript' || label === 'javascript') {
-		// 	return './ts.worker.bundle.js';
-		// }
+		 if (label === 'json') {
+		 	return './json.worker.bundle.js';
+		 }
+		 if (label === 'css' || label === 'scss' || label === 'less') {
+		 	return './css.worker.bundle.js';
+		 }
+		 if (label === 'html' || label === 'handlebars' || label === 'razor') {
+		 	return './html.worker.bundle.js';
+		 }
+		 if (label === 'typescript' || label === 'javascript') {
+		 	return './ts.worker.bundle.js';
+		 }
 		return './editor.worker.bundle.js';
 	}
 };
 
-monaco.editor.create(document.getElementById('container'), {
-	value: [
-		'from banana import *',
-		'',
-		'class Monkey:',
-		'	# Bananas the monkey can eat.',
-		'	capacity = 10',
-		'	def eat(self, N):',
-		"		'''Make the monkey eat N bananas!'''",
-		'		capacity = capacity - N*banana.size',
-		'',
-		'	def feeding_frenzy(self):',
-		'		eat(9.25)',
-		'		return "Yum yum"'
-	].join('\n'),
+window.editor = monaco.editor.create(document.getElementById('container'), {
+	value: [''].join('\n'),
 	language: 'python'
 });
+
+// Expose a colorize function that ensures language and theme are ready
+window.colorize = async function(source, language) {
+    // Wait for the language to be registered
+    function waitForLanguage(lang, timeout = 2000) {
+        return new Promise((resolve, reject) => {
+            const start = Date.now();
+            function check() {
+                if (monaco.languages.getLanguages().some(l => l.id === lang)) {
+                    resolve();
+                } else if (Date.now() - start > timeout) {
+                    reject(new Error('Language not registered: ' + lang));
+                } else {
+                    setTimeout(check, 20);
+                }
+            }
+            check();
+        });
+    }
+    await waitForLanguage(language);
+    return await monaco.editor.colorize(source, language, {});
+};
+
+// Gets the CSS for the specified theme.
+// vscode/src/vs/editor/standalone/browser/standaloneThemeService.ts has related code, but it is not exposed in the API
+window.getThemeCss = async function (theme) {
+
+	// Set the theme
+    window.editor.updateOptions({ theme: theme });
+
+	// Ideally we could listen for _onColorThemeChange to know when the CSS has finished loading
+	// For now, give it a few seconds to apply the theme
+    await new Promise(resolve => setTimeout(resolve, 2000));
+
+    // allCSS includes codiconCSS and themeCSS; maybe we just use themeCSS?
+    return window.editor._themeService._allCSS;
+};

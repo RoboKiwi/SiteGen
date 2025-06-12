@@ -15,6 +15,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
+        <ProjectReference Include="..\SiteGen.Extensions.Markdown.Monaco\SiteGen.Extensions.Markdown.Monaco.csproj" />
     </ItemGroup>
 
 </Project>

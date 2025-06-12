@@ -7,14 +7,17 @@ SiteGen is a .NET-based static site generator.
 ## Features
 
 - Markdown support
-- Pygments syntax highlighting
+- Syntax Highlighting
+  - Pygments
+  - Prism.js
+  - Monaco
 - Mermaid diagrams
 - Razor templates
 - Rich site hierarchy model, for building navigation in your templates
 - Table of Contents
 - Extensible
 
-## Usage
+## Get Started
 
 In your ASP.NET website, reference `SiteGen.Core`.
 
@@ -51,7 +54,18 @@ app.UseSiteGen();
 app.Run();
 ```
 
-Add your `.md` files in a `content` folder, and your static assets in `static`.
+Configure paths in `appsettings.json`:
+
+```json
+{
+  "ContentPaths": [ "content" ],
+  "StaticPaths": [ "static", "wwwroot" ]
+}
+```
+
+Add your `.md` files into the `content` folder, and your static assets in `static` or `wwwroot`.
+
+Add a `Page.cshtml` to 'Pages/Shared' (for Razor Pages) or 'Views/Home' or 'Views/Shared' (for MVC) folder.
 
 If you generate client-side css and javascript, you can distribute your built artifacts to either the `static` or `wwwroot` folders.
 
@@ -68,6 +82,14 @@ dotnet tool install --local SiteGen.Cli
 
 - Launch your website and bind to port :5000
 - Run `dotnet sitegen` to crawl your site and publish the static resources to `/public`
+
+# How it works
+
+SiteGen registers itself as a default fallback route. This allows your website to implement its own routes which will take precedence.
+
+By default, SiteGen will generate a site map from the markdown files it finds in the configured content directories.
+
+The SiteGen fallback route it for its in-built HomeController and Page action. This is why you must implement a default Page.cshtml view.
 
 # Services
 
