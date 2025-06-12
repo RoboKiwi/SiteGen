@@ -6,16 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Remove="src\index.html" />
-      <None Remove="src\index.js" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Content Include="src\index.html" />
-      <Content Include="src\index.js" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
     </ItemGroup>
 
