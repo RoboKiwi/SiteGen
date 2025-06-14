@@ -46,7 +46,8 @@ public class HomeController : Controller
         var settings = new XmlWriterSettings
         {
             NamespaceHandling = NamespaceHandling.OmitDuplicates,
-            OmitXmlDeclaration = false
+            OmitXmlDeclaration = false,
+            Async = true
         };
 
         await using var writer = XmlWriter.Create(sb, settings);
