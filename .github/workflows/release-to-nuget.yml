@@ -49,6 +49,7 @@ jobs:
         uses: actions/attest-build-provenance@v2
         with:
           subject-digest: sha256:${{ steps.upload.outputs.artifact-digest }}
+          subject-name: ${{ github.repository }}-${{ github.ref_name }}
 
       - name: Push to NuGet.org
         id: run-push
