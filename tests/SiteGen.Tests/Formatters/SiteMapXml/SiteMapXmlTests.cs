@@ -8,7 +8,7 @@ namespace SiteGen.Tests.Formatters.SiteMapXml;
 public class SiteMapXmlTests
 {
     [TestMethod]
-    public void Serialize()
+    public async Task Serialize()
     {
         var sitemap = new List<SiteMapXmlUrl> { new("/", new DateTimeOffset(2022, 01, 02, 03, 04, 05, TimeSpan.FromHours(+12))) };
 
@@ -23,7 +23,7 @@ public class SiteMapXmlTests
 
         SiteMapSerializer.Serialize(writer, sitemap);
 
-        writer.Flush();
+        await writer.FlushAsync();
 
         var xml = sb.ToString();
 
