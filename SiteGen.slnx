@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/docs/">
+    <File Path="docs/syntax-highlighting.md" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="samples/SiteGen.Samples.MicrosoftLearn/SiteGen.Samples.MicrosoftLearn.csproj" />
+  <Project Path="src/SiteGen.Cli/SiteGen.Cli.csproj" />
+  <Project Path="src/SiteGen.Core/SiteGen.Core.csproj" />
+  <Project Path="src/SiteGen.Extensions.Markdown.Monaco/SiteGen.Extensions.Markdown.Monaco.csproj" />
+  <Project Path="src/SiteGen.Extensions.Markdown.Prism/SiteGen.Extensions.Markdown.Prism.csproj" />
+  <Project Path="tests/SiteGen.Tests/SiteGen.Tests.csproj" />
+</Solution>

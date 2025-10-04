@@ -16,7 +16,8 @@ public class SiteMapXmlTests
         var settings = new XmlWriterSettings
         {
             NamespaceHandling = NamespaceHandling.OmitDuplicates,
-            OmitXmlDeclaration = false
+            OmitXmlDeclaration = false,
+            Async = true
         };
 
         using var writer = XmlWriter.Create(sb, settings);
@@ -33,6 +34,6 @@ public class SiteMapXmlTests
 <loc>/</loc>
 <lastmod>2022-01-02T03:04:05.0000000+12:00</lastmod>
 </url>
-</urlset>".ReplaceLineEndings(""), xml);
+</urlset>".ReplaceLineEndings(string.Empty), xml);
     }
 }
