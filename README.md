@@ -67,6 +67,8 @@ Add your `.md` files into the `content` folder, and your static assets in `stati
 
 Add a `Page.cshtml` to 'Pages/Shared' (for Razor Pages) or 'Views/Home' or 'Views/Shared' (for MVC) folder.
 
+> You should remove the @page directive from the top of the `Page.cshtml` file, as SiteGen will handle routing for you.
+
 If you generate client-side css and javascript, you can distribute your built artifacts to either the `static` or `wwwroot` folders.
 
 In your Razor views, you can reference the `ViewBag.Root` for the base node of the website, and use the `.Tree` property to crawl the site hierarchy.
@@ -77,7 +79,7 @@ In your Razor views, you can reference the `ViewBag.Root` for the base node of t
 
 ```dotnetcli
 dotnet new tool-manifest
-dotnet tool install --local SiteGen.Cli
+dotnet tool install --local SiteGen.Cli --prerelease
 ```
 
 - Launch your website and bind to port :5000

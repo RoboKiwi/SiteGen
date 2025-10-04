@@ -91,7 +91,8 @@ public class HomeController : Controller
             }
             await processor.ProcessAsync(node, cancellationToken);
         }
-        
+
+        // return PartialView("Page", node);
         return View("Page", node);
     }
 }
