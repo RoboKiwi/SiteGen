@@ -1,0 +1,10 @@
+﻿@model SiteGen.Core.Models.SiteNode
+@{
+	//ViewData["Title"] = Model?.Title;
+	Layout = "_Layout";
+}
+<div id="article">
+	<div>
+		@Html.Raw(Model.HtmlContent)
+	</div>
+</div>

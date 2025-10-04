@@ -8,10 +8,9 @@
     <FileVersion></FileVersion>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Razor.Runtime" Version="2.3.0" />
-  </ItemGroup>
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App"></FrameworkReference>
+	</ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
