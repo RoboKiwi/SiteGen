@@ -25,6 +25,11 @@ public static class SiteMapExtensions
 {
     public static SiteNode? FindByUri(this SiteMap nodes, Uri uri)
     {
-        return nodes.SingleOrDefault(x => x.Url == uri || WebUtility.UrlDecode(x.Url.ToString()) == WebUtility.UrlDecode(uri.ToString()));
+        var results = nodes.Where(x => x.Url == uri || WebUtility.UrlDecode(x.Url.ToString()) == WebUtility.UrlDecode(uri.ToString())).ToList();
+        if (results.Count > 1)
+        {
+            throw new InvalidOperationException($"Multiple nodes found for URI '{uri}':{Environment.NewLine}{string.Join(Environment.NewLine + "\t", results.Select(x => x.Path))}");
+        }
+        return results.SingleOrDefault();
     }
 }
