@@ -1,5 +1,6 @@
 ﻿using Markdig;
 using Markdig.Renderers;
+using Microsoft.Extensions.Logging.Abstractions;
 
 namespace SiteGen.Extensions.Markdown.Prism;
 
@@ -19,6 +20,6 @@ public class PrismMarkdownExtension(PrismHost host) : IMarkdownExtension
     {
         if (renderer is not HtmlRenderer htmlRenderer) return;
         if (htmlRenderer.ObjectRenderers.Contains<PrismCodeBlockRenderer>()) return;
-        htmlRenderer.ObjectRenderers.Insert(0, new PrismCodeBlockRenderer(host));
+        htmlRenderer.ObjectRenderers.Insert(0, new PrismCodeBlockRenderer(host, new NullLogger<PrismCodeBlockRenderer>()));
     }
 }
