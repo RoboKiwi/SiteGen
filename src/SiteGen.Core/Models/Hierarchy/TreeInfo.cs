@@ -149,6 +149,9 @@ public class TreeInfo<T> where T : class, ITreeEntity<T>, IEntity
             return default;
         }
     }
+
+    public SiteNode Root { get; internal set; }
+
     public void Refresh(IList<T> nodes)
     {
         siblings = nodes.Siblings(Entity, TreeListOptions.IncludeSelf).ToList();
