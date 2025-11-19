@@ -1,5 +1,6 @@
-﻿using SiteGen.Core.Models;
-using System.Diagnostics;
+﻿using System.Diagnostics;
+using LibGit2Sharp;
+using SiteGen.Core.Models;
 
 namespace SiteGen.Core.Services.Processors;
 
@@ -9,32 +10,89 @@ namespace SiteGen.Core.Services.Processors;
 /// </summary>
 public class GitInfoProcessor : ISiteNodeProcessor
 {
+    class GitInfo
+    {
+        public DateTimeOffset AddedTimestamp { get; set; }
+        public Signature AddedAuthor { get; set; } = null!;
+        public DateTimeOffset ModifiedTimestamp { get; set; }
+        public Signature ModifiedAuthor { get; set; } = null!;
+    }
+
     public async Task ProcessAsync(SiteNode node, CancellationToken cancellationToken)
     {
-        var startInfo = new ProcessStartInfo
+        var history = QueryHistory(node, cancellationToken);
+        if(history == null) return;
+        node.Date ??= history.AddedTimestamp;
+        node.DateModified = history.ModifiedTimestamp;
+    }
+
+    static readonly Dictionary<string, Dictionary<string, GitInfo>> histories = new();
+
+    GitInfo? QueryHistory(SiteNode node, CancellationToken cancellationToken)
+    {
+        var repoPath = Repository.Discover(node.Path);
+        if(string.IsNullOrWhiteSpace(repoPath)) return null;
+
+        if(!histories.TryGetValue(repoPath, out var history))
         {
-            FileName = "git",
-            Arguments = $"log -1 --pretty=format:\"%aI '%an' '%ae'\" \"{node.Path}\"",
-            RedirectStandardOutput = true,
-            RedirectStandardError = true
-        };
+            using var repo = new Repository(repoPath);
 
-        var process = Process.Start(startInfo)!;
-        process.WaitForExit(1000);
+            history = new Dictionary<string, GitInfo>();
+            var deletedFiles = new HashSet<string>();
 
-        var output = await process.StandardOutput.ReadToEndAsync(cancellationToken);
-        var error = await process.StandardError.ReadToEndAsync(cancellationToken);
+            var filter = new CommitFilter
+            {
+                SortBy = CommitSortStrategies.Topological | CommitSortStrategies.Reverse
+            };
 
-        var chunks = output.Trim().Split(' ');
+            foreach(var commit in repo.Commits.QueryBy(filter))
+            {
+                var timestamp = commit.Author.When;
+                var author = commit.Author;
 
-        if(!string.IsNullOrWhiteSpace(error) || chunks.Length == 0 || string.IsNullOrWhiteSpace(chunks[0]))
-        {
-            return;
+                var changes = !commit.Parents.Any()
+                    ? repo.Diff.Compare<TreeChanges>(null, commit.Tree)
+                    : repo.Diff.Compare<TreeChanges>(commit.Parents.First().Tree, commit.Tree);
+
+                foreach(var change in changes)
+                {
+                    string path = Path.GetFullPath(Path.Combine(repo.Info.WorkingDirectory, change.Path));
+
+                    if(change.Status == ChangeKind.Deleted)
+                    {
+                        deletedFiles.Add(path);
+                        continue;
+                    }
+
+                    if(!history.ContainsKey(path))
+                    {
+                        // First time we see the file: it's being added
+                        history[path] = new GitInfo
+                        {
+                            AddedTimestamp = timestamp,
+                            AddedAuthor = author,
+                            ModifiedTimestamp = timestamp,
+                            ModifiedAuthor = author
+                        };
+                    }
+                    else
+                    {
+                        // Update last modified info
+                        history[path].ModifiedTimestamp = timestamp;
+                        history[path].ModifiedAuthor = author;
+                    }
+                }
+            }
+
+            // Remove deleted files from history
+            foreach(var deleted in deletedFiles)
+            {
+                history.Remove(deleted);
+            }
+
+            histories[repoPath] = history;
         }
-
-        var authorDate = DateTimeOffset.Parse(chunks[0]);
-
-        node.Date ??= authorDate;
-        node.DateModified = authorDate;
+        
+        return history.TryGetValue(node.Path, out var gitInfo) ? gitInfo : null;
     }
 }
