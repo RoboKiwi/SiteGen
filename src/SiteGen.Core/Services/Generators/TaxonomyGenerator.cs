@@ -26,6 +26,7 @@ public class TaxonomyGenerator : INodeGenerator
         var i = 0;
         while( i < 100)
         {
+            // TODO: Optimize concatenation
             if( value != null && node.FrontMatter.TryGetValue(value + ":" + i, out var result) && result != null)
             {
                 values.Add(result);
