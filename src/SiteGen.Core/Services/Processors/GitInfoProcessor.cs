@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using LibGit2Sharp;
+﻿using LibGit2Sharp;
 using SiteGen.Core.Models;
 
 namespace SiteGen.Core.Services.Processors;
