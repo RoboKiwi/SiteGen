@@ -77,7 +77,7 @@ public class HomeController : Controller
 
         node.Tree.Refresh(site);// nodes);
 
-        ViewBag.Root = site.First();
+        node.Tree.Root = site.First();
 
         // Process Markdown
         await processor.ProcessAsync(node, cancellationToken);
