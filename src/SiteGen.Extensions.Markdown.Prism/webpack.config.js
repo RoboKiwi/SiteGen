@@ -6,6 +6,9 @@ module.exports = {
     optimization: {
         minimize: false,
     },
+    output: {
+        path: path.resolve(__dirname, 'wwwroot'),
+    },
     plugins: [
         new HtmlWebpackPlugin({
             title: 'PrismJS'

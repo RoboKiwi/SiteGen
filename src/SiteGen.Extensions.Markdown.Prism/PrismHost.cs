@@ -1,60 +1,28 @@
 ﻿using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Playwright;
-using System.Reflection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Hosting;
 
 namespace SiteGen.Extensions.Markdown.Prism;
 
 public class PrismHost : IAsyncDisposable
 {
-    const string url = "http://127.0.0.1:0";
-    readonly DirectoryInfo directory;
-
     IPage page;
-    WebApplication app;
+    readonly IServer server;
+    readonly IServerAddressesFeature addresses;    
     static bool isInitialized;
 
     static readonly SemaphoreSlim semaphore = new SemaphoreSlim(1, 1);
 
-    public PrismHost(IPage page, DirectoryInfo directory)
+    public PrismHost(IPage page, IServer server)
     {
         this.page = page;
-
-        var options = new WebApplicationOptions
-        {
-            WebRootPath = directory.FullName,
-            ContentRootPath = directory.FullName,
-            ApplicationName = "prism"
-        };
-
-        if (!directory.Exists) directory.Create();
-
-        var builder = WebApplication.CreateSlimBuilder(options);
-
-        builder.WebHost.UseUrls(url);
-
-        app = builder.Build();
-
-        app
-            .UseDefaultFiles()
-            .UseStaticFiles(new StaticFileOptions { ServeUnknownFileTypes = true });
-
-        this.directory = directory;
-    }
-
-    public PrismHost(IPage page) : this(page, new DirectoryInfo(Path.Combine(Path.GetDirectoryName(Environment.ProcessPath), ".prism")))
-    {
-        
+        this.server = server;
+        addresses = server.Features.Get<IServerAddressesFeature>()!;
     }
 
     public async ValueTask DisposeAsync()
     {
         await page.CloseAsync();
-        await app.StopAsync();
-        await app.DisposeAsync();
     }
 
     public async Task<string> Highlight(string source, string language)
@@ -67,27 +35,13 @@ public class PrismHost : IAsyncDisposable
             {
                 if (!isInitialized)
                 {
-                    // Write resources to the root directory
-                    var assembly = Assembly.GetExecutingAssembly();
-                    foreach (var name in assembly.GetManifestResourceNames())
-                    {
-                        var ext = Path.GetExtension(name);
-                        var filename = Path.GetExtension(Path.GetFileNameWithoutExtension(name)).TrimStart('.');
+                    var address = addresses.Addresses.First();
+                    var assembly = GetType().Assembly;
+                    var name = assembly.GetName();
+                    
+                    var uri = new Uri(new Uri(address), $"/_content/{name.Name}/index.html");
 
-                        await using var stream = assembly.GetManifestResourceStream(name);
-                        await using var destination = File.Open(Path.Combine(directory.FullName, $"{filename}{ext}"), FileMode.Create, FileAccess.Write);
-                        await stream.CopyToAsync(destination);
-                        await stream.FlushAsync();
-                    }
-
-                    await Task.Run(() => app.StartAsync());
-                                                            
-                    // Get the address that was bound to (random port)
-                    var server = app.Services.GetRequiredService<IServer>();
-                    var addressFeature = server.Features.Get<IServerAddressesFeature>()!;
-                    var address = addressFeature.Addresses.Single();
-
-                    await page.GotoAsync(address);
+                    await page.GotoAsync(uri.ToString());
                     await page.WaitForLoadStateAsync(LoadState.DOMContentLoaded);
                     await page.WaitForLoadStateAsync(LoadState.NetworkIdle);
 

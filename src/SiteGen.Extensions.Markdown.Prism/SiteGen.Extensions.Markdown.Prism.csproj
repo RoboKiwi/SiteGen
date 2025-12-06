@@ -1,24 +1,30 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+  <PropertyGroup>
+    <TypeScriptToolsDisable>true</TypeScriptToolsDisable>
+    <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)node_modules\**;$(ProjectDir)dist\**</DefaultItemExcludes>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
+  </ItemGroup>
+
+  <Target Name="BuildPrism" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
-        <TypeScriptToolsDisable>true</TypeScriptToolsDisable>
-        <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)node_modules\**;$(ProjectDir)dist\**</DefaultItemExcludes>
+      <_NodeArgs Condition="'$(_NodeArgs)' == '' AND '$(Configuration)' == 'Release'">--mode=production</_NodeArgs>
+      <_NodeArgs Condition="'$(_NodeArgs)' == ''">--mode=development</_NodeArgs>
     </PropertyGroup>
 
+    <Exec WorkingDirectory="$(ProjectDir)" Command="npm install" />
+    <Exec WorkingDirectory="$(ProjectDir)" Command="npm run build $(_NodeArgs)" />
+
     <ItemGroup>
-        <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
+      <_PrismThemes Include="node_modules\prismjs\themes\*.css" />
     </ItemGroup>
 
-    <Target Name="BuildPrism" BeforeTargets="PrepareForBuild">
-        <PropertyGroup>
-            <_NodeArgs Condition="'$(_NodeArgs)' == '' AND '$(Configuration)' == 'Release'">--mode=production</_NodeArgs>
-            <_NodeArgs Condition="'$(_NodeArgs)' == ''">--mode=development</_NodeArgs>
-        </PropertyGroup>
-
-        <Exec WorkingDirectory="$(ProjectDir)" Command="npm install" />
-        <Exec WorkingDirectory="$(ProjectDir)" Command="npm run build $(_NodeArgs)" />
-        
-        <ItemGroup>
-            <EmbeddedResource Include="$(ProjectDir)dist\**" Exclude="*.txt"/>
-        </ItemGroup>
-    </Target>
+    <Copy SourceFiles="@(_PrismThemes)" DestinationFolder="wwwroot" />
+  </Target>
 </Project>
