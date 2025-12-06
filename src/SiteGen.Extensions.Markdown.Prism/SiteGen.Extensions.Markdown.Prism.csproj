@@ -1,7 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
   <PropertyGroup>
     <TypeScriptToolsDisable>true</TypeScriptToolsDisable>
-    <DefaultItemExcludes>$(DefaultItemExcludes);$(ProjectDir)node_modules\**;$(ProjectDir)dist\**</DefaultItemExcludes>
   </PropertyGroup>
 
   <ItemGroup>
@@ -9,22 +8,11 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="3.0.71" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SiteGen.Core\SiteGen.Core.csproj" />
   </ItemGroup>
 
-  <Target Name="BuildPrism" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <_NodeArgs Condition="'$(_NodeArgs)' == '' AND '$(Configuration)' == 'Release'">--mode=production</_NodeArgs>
-      <_NodeArgs Condition="'$(_NodeArgs)' == ''">--mode=development</_NodeArgs>
-    </PropertyGroup>
-
-    <Exec WorkingDirectory="$(ProjectDir)" Command="npm install" />
-    <Exec WorkingDirectory="$(ProjectDir)" Command="npm run build $(_NodeArgs)" />
-
-    <ItemGroup>
-      <_PrismThemes Include="node_modules\prismjs\themes\*.css" />
-    </ItemGroup>
-
-    <Copy SourceFiles="@(_PrismThemes)" DestinationFolder="wwwroot" />
-  </Target>
 </Project>

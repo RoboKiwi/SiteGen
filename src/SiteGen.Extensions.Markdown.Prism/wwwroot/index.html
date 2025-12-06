@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>PrismJS</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <script>
+        window.Prism = window.Prism || {};
+        window.Prism.manual = true;
+    </script>
+    <!--<script src="lib/prismjs/components/index.js"></script>-->
+    <script src="lib/prismjs/components/prism-core.min.js"></script>
+    <script src="lib/prismjs/components.js"></script>
+    <script src="lib/prismjs/dependencies.js"></script>
+    <script src="lib/prismjs/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="lib/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
+    <script src="lib/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
+    <script src="lib/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+</head>
+<body>
+    <script>
+        const languages = Object.keys(components.languages).filter(l => l != 'meta');
+        Prism.plugins.autoloader.loadLanguages(languages);
+    </script>
+</body>
+</html>
