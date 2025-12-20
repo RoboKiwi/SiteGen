@@ -21,4 +21,11 @@
     <PackageReference Include="YamlDotNet" Version="16.3.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!--<Folder Include=".common\" />-->
+    <None Include="..\..\docs\**\*">
+      <Link>.common\docs\%(RecursiveDir)%(Filename)%(Extension)</Link>
+    </None>
+  </ItemGroup>
+
 </Project>

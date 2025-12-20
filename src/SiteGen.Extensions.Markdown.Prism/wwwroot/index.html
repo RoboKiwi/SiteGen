@@ -4,23 +4,430 @@
     <meta charset="utf-8">
     <title>PrismJS</title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="stylesheet" href="lib/prismjs/themes/prism.css" />
+    <style>
+        pre[class*="language-"].line-numbers {
+            position: relative;
+            padding-left: 3.8em;
+            counter-reset: linenumber;
+        }
+
+            pre[class*="language-"].line-numbers > code {
+                position: relative;
+                white-space: inherit;
+            }
+
+        .line-numbers .line-numbers-rows {
+            position: absolute;
+            pointer-events: none;
+            top: 0;
+            font-size: 100%;
+            left: -3.8em;
+            width: 3em; /* works for line-numbers below 1000 lines */
+            letter-spacing: -1px;
+            border-right: 1px solid #999;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .line-numbers-rows > span {
+            display: block;
+            counter-increment: linenumber;
+        }
+
+            .line-numbers-rows > span:before {
+                content: counter(linenumber);
+                color: #999;
+                display: block;
+                padding-right: 0.8em;
+                text-align: right;
+            }
+    </style>
     <script>
         window.Prism = window.Prism || {};
-        window.Prism.manual = true;
+        //window.Prism.manual = true;
     </script>
-    <!--<script src="lib/prismjs/components/index.js"></script>-->
+    <!--<script src="lib/prismjs/components/index.js.js"></script>-->
     <script src="lib/prismjs/components/prism-core.min.js"></script>
-    <script src="lib/prismjs/components.js"></script>
+    <!--<script src="lib/prismjs/components.js"></script>
     <script src="lib/prismjs/dependencies.js"></script>
-    <script src="lib/prismjs/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script src="lib/prismjs/plugins/autoloader/prism-autoloader.min.js"></script>-->
+    <!-- Initial base Prism defaults-->
+    <script src="lib/prismjs/components/prism-markup.js"></script>
+    <script src="lib/prismjs/components/prism-css.js"></script>
+    <script src="lib/prismjs/components/prism-clike.js"></script>
+    <script src="lib/prismjs/components/prism-javascript.js"></script>
+
+    <!-- Other languages depend on / extend these, so load them first. -->
+    <script src="lib/prismjs/components/prism-sql.js"></script>
+    <script src="lib/prismjs/components/prism-c.js"></script>
+    <script src="lib/prismjs/components/prism-cpp.js"></script>
+    <script src="lib/prismjs/components/prism-markup-templating.js"></script>
+    <script src="lib/prismjs/components/prism-php.js"></script>
+    <script src="lib/prismjs/components/prism-typescript.js"></script>
+    <script src="lib/prismjs/components/prism-ruby.js"></script>
+
+    <!-- All languages -->
+    <script src="lib/prismjs/components/prism-abap.js"></script>
+    <script src="lib/prismjs/components/prism-abnf.js"></script>
+    <script src="lib/prismjs/components/prism-actionscript.js"></script>
+    <script src="lib/prismjs/components/prism-ada.js"></script>
+    <script src="lib/prismjs/components/prism-agda.js"></script>
+    <script src="lib/prismjs/components/prism-al.js"></script>
+    <script src="lib/prismjs/components/prism-antlr4.js"></script>
+    <script src="lib/prismjs/components/prism-apacheconf.js"></script>
+    <script src="lib/prismjs/components/prism-apex.js"></script>
+    <script src="lib/prismjs/components/prism-apl.js"></script>
+    <script src="lib/prismjs/components/prism-applescript.js"></script>
+    <script src="lib/prismjs/components/prism-aql.js"></script>
+    <script src="lib/prismjs/components/prism-arduino.js"></script>
+    <script src="lib/prismjs/components/prism-arff.js"></script>
+    <script src="lib/prismjs/components/prism-armasm.js"></script>
+    <script src="lib/prismjs/components/prism-arturo.js"></script>
+    <script src="lib/prismjs/components/prism-asciidoc.js"></script>
+    <script src="lib/prismjs/components/prism-asm6502.js"></script>
+    <script src="lib/prismjs/components/prism-asmatmel.js"></script>
+    <script src="lib/prismjs/components/prism-aspnet.js"></script>
+    <script src="lib/prismjs/components/prism-autohotkey.js"></script>
+    <script src="lib/prismjs/components/prism-autoit.js"></script>
+    <script src="lib/prismjs/components/prism-avisynth.js"></script>
+    <script src="lib/prismjs/components/prism-avro-idl.js"></script>
+    <script src="lib/prismjs/components/prism-awk.js"></script>
+    <script src="lib/prismjs/components/prism-bash.js"></script>
+    <script src="lib/prismjs/components/prism-basic.js"></script>
+    <script src="lib/prismjs/components/prism-batch.js"></script>
+    <script src="lib/prismjs/components/prism-bbcode.js"></script>
+    <script src="lib/prismjs/components/prism-bbj.js"></script>
+    <script src="lib/prismjs/components/prism-bicep.js"></script>
+    <script src="lib/prismjs/components/prism-birb.js"></script>
+    <script src="lib/prismjs/components/prism-bison.js"></script>
+    <script src="lib/prismjs/components/prism-bnf.js"></script>
+    <script src="lib/prismjs/components/prism-bqn.js"></script>
+    <script src="lib/prismjs/components/prism-brainfuck.js"></script>
+    <script src="lib/prismjs/components/prism-brightscript.js"></script>
+    <script src="lib/prismjs/components/prism-bro.js"></script>
+    <script src="lib/prismjs/components/prism-bsl.js"></script>
+    <script src="lib/prismjs/components/prism-cfscript.js"></script>
+    <script src="lib/prismjs/components/prism-chaiscript.js"></script>
+    <script src="lib/prismjs/components/prism-cil.js"></script>
+    <script src="lib/prismjs/components/prism-cilkc.js"></script>
+    <script src="lib/prismjs/components/prism-cilkcpp.js"></script>
+    <script src="lib/prismjs/components/prism-clike.js"></script>
+    <script src="lib/prismjs/components/prism-clojure.js"></script>
+    <script src="lib/prismjs/components/prism-cmake.js"></script>
+    <script src="lib/prismjs/components/prism-cobol.js"></script>
+    <script src="lib/prismjs/components/prism-coffeescript.js"></script>
+    <script src="lib/prismjs/components/prism-concurnas.js"></script>
+    <script src="lib/prismjs/components/prism-cooklang.js"></script>
+    <script src="lib/prismjs/components/prism-coq.js"></script>
+    <script src="lib/prismjs/components/prism-crystal.js"></script>
+    <script src="lib/prismjs/components/prism-csharp.js"></script>
+    <script src="lib/prismjs/components/prism-cshtml.js"></script>
+    <script src="lib/prismjs/components/prism-csp.js"></script>
+    <script src="lib/prismjs/components/prism-css-extras.js"></script>
+    <script src="lib/prismjs/components/prism-css.js"></script>
+    <script src="lib/prismjs/components/prism-csv.js"></script>
+    <script src="lib/prismjs/components/prism-cue.js"></script>
+    <script src="lib/prismjs/components/prism-cypher.js"></script>
+    <script src="lib/prismjs/components/prism-d.js"></script>
+    <script src="lib/prismjs/components/prism-dart.js"></script>
+    <script src="lib/prismjs/components/prism-dataweave.js"></script>
+    <script src="lib/prismjs/components/prism-dax.js"></script>
+    <script src="lib/prismjs/components/prism-dhall.js"></script>
+    <script src="lib/prismjs/components/prism-diff.js"></script>
+    <script src="lib/prismjs/components/prism-django.js"></script>
+    <script src="lib/prismjs/components/prism-dns-zone-file.js"></script>
+    <script src="lib/prismjs/components/prism-docker.js"></script>
+    <script src="lib/prismjs/components/prism-dot.js"></script>
+    <script src="lib/prismjs/components/prism-ebnf.js"></script>
+    <script src="lib/prismjs/components/prism-editorconfig.js"></script>
+    <script src="lib/prismjs/components/prism-eiffel.js"></script>
+    <script src="lib/prismjs/components/prism-ejs.js"></script>
+    <script src="lib/prismjs/components/prism-elixir.js"></script>
+    <script src="lib/prismjs/components/prism-elm.js"></script>
+    <script src="lib/prismjs/components/prism-erb.js"></script>
+    <script src="lib/prismjs/components/prism-erlang.js"></script>
+    <script src="lib/prismjs/components/prism-etlua.js"></script>
+    <script src="lib/prismjs/components/prism-excel-formula.js"></script>
+    <script src="lib/prismjs/components/prism-factor.js"></script>
+    <script src="lib/prismjs/components/prism-false.js"></script>
+    <script src="lib/prismjs/components/prism-firestore-security-rules.js"></script>
+    <script src="lib/prismjs/components/prism-flow.js"></script>
+    <script src="lib/prismjs/components/prism-fortran.js"></script>
+    <script src="lib/prismjs/components/prism-fsharp.js"></script>
+    <script src="lib/prismjs/components/prism-ftl.js"></script>
+    <script src="lib/prismjs/components/prism-gap.js"></script>
+    <script src="lib/prismjs/components/prism-gcode.js"></script>
+    <script src="lib/prismjs/components/prism-gdscript.js"></script>
+    <script src="lib/prismjs/components/prism-gedcom.js"></script>
+    <script src="lib/prismjs/components/prism-gettext.js"></script>
+    <script src="lib/prismjs/components/prism-gherkin.js"></script>
+    <script src="lib/prismjs/components/prism-git.js"></script>
+    <script src="lib/prismjs/components/prism-glsl.js"></script>
+    <script src="lib/prismjs/components/prism-gml.js"></script>
+    <script src="lib/prismjs/components/prism-gn.js"></script>
+    <script src="lib/prismjs/components/prism-go-module.js"></script>
+    <script src="lib/prismjs/components/prism-go.js"></script>
+    <script src="lib/prismjs/components/prism-gradle.js"></script>
+    <script src="lib/prismjs/components/prism-graphql.js"></script>
+    <script src="lib/prismjs/components/prism-groovy.js"></script>
+    <script src="lib/prismjs/components/prism-haml.js"></script>
+    <script src="lib/prismjs/components/prism-handlebars.js"></script>
+    <script src="lib/prismjs/components/prism-haskell.js"></script>
+    <script src="lib/prismjs/components/prism-haxe.js"></script>
+    <script src="lib/prismjs/components/prism-hcl.js"></script>
+    <script src="lib/prismjs/components/prism-hlsl.js"></script>
+    <script src="lib/prismjs/components/prism-hoon.js"></script>
+    <script src="lib/prismjs/components/prism-hpkp.js"></script>
+    <script src="lib/prismjs/components/prism-hsts.js"></script>
+    <script src="lib/prismjs/components/prism-http.js"></script>
+    <script src="lib/prismjs/components/prism-ichigojam.js"></script>
+    <script src="lib/prismjs/components/prism-icon.js"></script>
+    <script src="lib/prismjs/components/prism-icu-message-format.js"></script>
+    <script src="lib/prismjs/components/prism-idris.js"></script>
+    <script src="lib/prismjs/components/prism-iecst.js"></script>
+    <script src="lib/prismjs/components/prism-ignore.js"></script>
+    <script src="lib/prismjs/components/prism-inform7.js"></script>
+    <script src="lib/prismjs/components/prism-ini.js"></script>
+    <script src="lib/prismjs/components/prism-io.js"></script>
+    <script src="lib/prismjs/components/prism-j.js"></script>
+    <script src="lib/prismjs/components/prism-java.js"></script>
+    <script src="lib/prismjs/components/prism-javadoclike.js"></script>
+
+    <!--Requires javadoclike to load first-->
+    <script src="lib/prismjs/components/prism-javadoc.js"></script>
+
+    <script src="lib/prismjs/components/prism-javascript.js"></script>
+    <script src="lib/prismjs/components/prism-javastacktrace.js"></script>
+    <script src="lib/prismjs/components/prism-jexl.js"></script>
+    <script src="lib/prismjs/components/prism-jolie.js"></script>
+    <script src="lib/prismjs/components/prism-jq.js"></script>
+    <script src="lib/prismjs/components/prism-js-extras.js"></script>
+    <script src="lib/prismjs/components/prism-js-templates.js"></script>
+    <script src="lib/prismjs/components/prism-jsdoc.js"></script>
+    <script src="lib/prismjs/components/prism-json.js"></script>
+    <script src="lib/prismjs/components/prism-json5.js"></script>
+    <script src="lib/prismjs/components/prism-jsonp.js"></script>
+    <script src="lib/prismjs/components/prism-jsstacktrace.js"></script>
+    <script src="lib/prismjs/components/prism-jsx.js"></script>
+    <script src="lib/prismjs/components/prism-julia.js"></script>
+    <script src="lib/prismjs/components/prism-keepalived.js"></script>
+    <script src="lib/prismjs/components/prism-keyman.js"></script>
+    <script src="lib/prismjs/components/prism-kotlin.js"></script>
+    <script src="lib/prismjs/components/prism-kumir.js"></script>
+    <script src="lib/prismjs/components/prism-kusto.js"></script>
+    <script src="lib/prismjs/components/prism-latex.js"></script>
+    <script src="lib/prismjs/components/prism-latte.js"></script>
+    <script src="lib/prismjs/components/prism-less.js"></script>
+    <script src="lib/prismjs/components/prism-linker-script.js"></script>
+    <script src="lib/prismjs/components/prism-liquid.js"></script>
+    <script src="lib/prismjs/components/prism-lisp.js"></script>
+    <script src="lib/prismjs/components/prism-livescript.js"></script>
+    <script src="lib/prismjs/components/prism-llvm.js"></script>
+    <script src="lib/prismjs/components/prism-log.js"></script>
+    <script src="lib/prismjs/components/prism-lolcode.js"></script>
+    <script src="lib/prismjs/components/prism-lua.js"></script>
+    <script src="lib/prismjs/components/prism-magma.js"></script>
+    <script src="lib/prismjs/components/prism-makefile.js"></script>
+    <script src="lib/prismjs/components/prism-markdown.js"></script>
+    <script src="lib/prismjs/components/prism-mata.js"></script>
+    <script src="lib/prismjs/components/prism-matlab.js"></script>
+    <script src="lib/prismjs/components/prism-maxscript.js"></script>
+    <script src="lib/prismjs/components/prism-mel.js"></script>
+    <script src="lib/prismjs/components/prism-mermaid.js"></script>
+    <script src="lib/prismjs/components/prism-metafont.js"></script>
+    <script src="lib/prismjs/components/prism-mizar.js"></script>
+    <script src="lib/prismjs/components/prism-mongodb.js"></script>
+    <script src="lib/prismjs/components/prism-monkey.js"></script>
+    <script src="lib/prismjs/components/prism-moonscript.js"></script>
+    <script src="lib/prismjs/components/prism-n1ql.js"></script>
+    <script src="lib/prismjs/components/prism-n4js.js"></script>
+    <script src="lib/prismjs/components/prism-nand2tetris-hdl.js"></script>
+    <script src="lib/prismjs/components/prism-naniscript.js"></script>
+    <script src="lib/prismjs/components/prism-nasm.js"></script>
+    <script src="lib/prismjs/components/prism-neon.js"></script>
+    <script src="lib/prismjs/components/prism-nevod.js"></script>
+    <script src="lib/prismjs/components/prism-nginx.js"></script>
+    <script src="lib/prismjs/components/prism-nim.js"></script>
+    <script src="lib/prismjs/components/prism-nix.js"></script>
+    <script src="lib/prismjs/components/prism-nsis.js"></script>
+    <script src="lib/prismjs/components/prism-objectivec.js"></script>
+    <script src="lib/prismjs/components/prism-ocaml.js"></script>
+    <script src="lib/prismjs/components/prism-odin.js"></script>
+    <script src="lib/prismjs/components/prism-opencl.js"></script>
+    <script src="lib/prismjs/components/prism-openqasm.js"></script>
+    <script src="lib/prismjs/components/prism-oz.js"></script>
+    <script src="lib/prismjs/components/prism-parigp.js"></script>
+    <script src="lib/prismjs/components/prism-parser.js"></script>
+    <script src="lib/prismjs/components/prism-pascal.js"></script>
+    <script src="lib/prismjs/components/prism-pascaligo.js"></script>
+    <script src="lib/prismjs/components/prism-pcaxis.js"></script>
+    <script src="lib/prismjs/components/prism-peoplecode.js"></script>
+    <script src="lib/prismjs/components/prism-perl.js"></script>
+    <script src="lib/prismjs/components/prism-php-extras.js"></script>
+    <script src="lib/prismjs/components/prism-phpdoc.js"></script>
+    <script src="lib/prismjs/components/prism-plant-uml.js"></script>
+    <script src="lib/prismjs/components/prism-plsql.js"></script>
+    <script src="lib/prismjs/components/prism-powerquery.js"></script>
+    <script src="lib/prismjs/components/prism-powershell.js"></script>
+    <script src="lib/prismjs/components/prism-processing.js"></script>
+    <script src="lib/prismjs/components/prism-prolog.js"></script>
+    <script src="lib/prismjs/components/prism-promql.js"></script>
+    <script src="lib/prismjs/components/prism-properties.js"></script>
+    <script src="lib/prismjs/components/prism-protobuf.js"></script>
+    <script src="lib/prismjs/components/prism-psl.js"></script>
+    <script src="lib/prismjs/components/prism-pug.js"></script>
+    <script src="lib/prismjs/components/prism-puppet.js"></script>
+    <script src="lib/prismjs/components/prism-pure.js"></script>
+    <script src="lib/prismjs/components/prism-purebasic.js"></script>
+    <script src="lib/prismjs/components/prism-purescript.js"></script>
+    <script src="lib/prismjs/components/prism-python.js"></script>
+    <script src="lib/prismjs/components/prism-q.js"></script>
+    <script src="lib/prismjs/components/prism-qml.js"></script>
+    <script src="lib/prismjs/components/prism-qore.js"></script>
+    <script src="lib/prismjs/components/prism-qsharp.js"></script>
+    <script src="lib/prismjs/components/prism-r.js"></script>
+    <script src="lib/prismjs/components/prism-reason.js"></script>
+    <script src="lib/prismjs/components/prism-regex.js"></script>
+    <script src="lib/prismjs/components/prism-rego.js"></script>
+    <script src="lib/prismjs/components/prism-renpy.js"></script>
+    <script src="lib/prismjs/components/prism-rescript.js"></script>
+    <script src="lib/prismjs/components/prism-rest.js"></script>
+    <script src="lib/prismjs/components/prism-rip.js"></script>
+    <script src="lib/prismjs/components/prism-roboconf.js"></script>
+    <script src="lib/prismjs/components/prism-robotframework.js"></script>
+    <script src="lib/prismjs/components/prism-rust.js"></script>
+    <script src="lib/prismjs/components/prism-sas.js"></script>
+    <script src="lib/prismjs/components/prism-sass.js"></script>
+    <script src="lib/prismjs/components/prism-scala.js"></script>
+    <script src="lib/prismjs/components/prism-scheme.js"></script>
+
+    <!--Must load after scheme-->
+    <script src="lib/prismjs/components/prism-lilypond.js"></script>
+    <script src="lib/prismjs/components/prism-racket.js"></script>
+
+    <script src="lib/prismjs/components/prism-scss.js"></script>
+    <script src="lib/prismjs/components/prism-shell-session.js"></script>
+    <script src="lib/prismjs/components/prism-smali.js"></script>
+    <script src="lib/prismjs/components/prism-smalltalk.js"></script>
+    <script src="lib/prismjs/components/prism-smarty.js"></script>
+    <script src="lib/prismjs/components/prism-sml.js"></script>
+    <script src="lib/prismjs/components/prism-solidity.js"></script>
+    <script src="lib/prismjs/components/prism-solution-file.js"></script>
+    <script src="lib/prismjs/components/prism-soy.js"></script>
+    <script src="lib/prismjs/components/prism-splunk-spl.js"></script>
+    <script src="lib/prismjs/components/prism-sqf.js"></script>
+    <script src="lib/prismjs/components/prism-sql.js"></script>
+    <script src="lib/prismjs/components/prism-squirrel.js"></script>
+    <script src="lib/prismjs/components/prism-stan.js"></script>
+    <script src="lib/prismjs/components/prism-stata.js"></script>
+    <script src="lib/prismjs/components/prism-stylus.js"></script>
+    <script src="lib/prismjs/components/prism-supercollider.js"></script>
+    <script src="lib/prismjs/components/prism-swift.js"></script>
+    <script src="lib/prismjs/components/prism-systemd.js"></script>
+    <script src="lib/prismjs/components/prism-t4-templating.js"></script>
+    <script src="lib/prismjs/components/prism-t4-cs.js"></script>
+    <script src="lib/prismjs/components/prism-t4-vb.js"></script>
+    <script src="lib/prismjs/components/prism-tap.js"></script>
+    <script src="lib/prismjs/components/prism-tcl.js"></script>
+    <script src="lib/prismjs/components/prism-textile.js"></script>
+    <script src="lib/prismjs/components/prism-toml.js"></script>
+    <script src="lib/prismjs/components/prism-tremor.js"></script>
+    <script src="lib/prismjs/components/prism-tsx.js"></script>
+    <script src="lib/prismjs/components/prism-tt2.js"></script>
+    <script src="lib/prismjs/components/prism-turtle.js"></script>
+
+    <!--Requires turtle-->
+    <script src="lib/prismjs/components/prism-sparql.js"></script>
+
+    <script src="lib/prismjs/components/prism-twig.js"></script>
+    <script src="lib/prismjs/components/prism-typoscript.js"></script>
+    <script src="lib/prismjs/components/prism-unrealscript.js"></script>
+    <script src="lib/prismjs/components/prism-uorazor.js"></script>
+    <script src="lib/prismjs/components/prism-uri.js"></script>
+    <script src="lib/prismjs/components/prism-v.js"></script>
+    <script src="lib/prismjs/components/prism-vala.js"></script>
+    <script src="lib/prismjs/components/prism-vbnet.js"></script>
+    <script src="lib/prismjs/components/prism-velocity.js"></script>
+    <script src="lib/prismjs/components/prism-verilog.js"></script>
+    <script src="lib/prismjs/components/prism-vhdl.js"></script>
+    <script src="lib/prismjs/components/prism-vim.js"></script>
+    <script src="lib/prismjs/components/prism-visual-basic.js"></script>
+    <script src="lib/prismjs/components/prism-warpscript.js"></script>
+    <script src="lib/prismjs/components/prism-wasm.js"></script>
+    <script src="lib/prismjs/components/prism-web-idl.js"></script>
+    <script src="lib/prismjs/components/prism-wgsl.js"></script>
+    <script src="lib/prismjs/components/prism-wiki.js"></script>
+    <script src="lib/prismjs/components/prism-wolfram.js"></script>
+    <script src="lib/prismjs/components/prism-wren.js"></script>
+    <script src="lib/prismjs/components/prism-xeora.js"></script>
+    <script src="lib/prismjs/components/prism-xml-doc.js"></script>
+    <script src="lib/prismjs/components/prism-xojo.js"></script>
+    <script src="lib/prismjs/components/prism-xquery.js"></script>
+    <script src="lib/prismjs/components/prism-yaml.js"></script>
+    <script src="lib/prismjs/components/prism-yang.js"></script>
+    <script src="lib/prismjs/components/prism-zig.js"></script>
+
     <script src="lib/prismjs/plugins/line-numbers/prism-line-numbers.min.js"></script>
     <script src="lib/prismjs/plugins/toolbar/prism-toolbar.min.js"></script>
     <script src="lib/prismjs/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
 </head>
-<body>
+<body class="line-numbers">
     <script>
-        const languages = Object.keys(components.languages).filter(l => l != 'meta');
-        Prism.plugins.autoloader.loadLanguages(languages);
+        //const languages = Object.keys(components.languages).filter(l => l != 'meta');
+        //Prism.plugins.autoloader.loadLanguages(languages);
+
+        function highlight(code) {
+
+        }
+
     </script>
+    
+    <div>
+        <pre><code class="language-csharp">
+    using SiteGen.Core.Models;
+    using System.Diagnostics;
+
+    namespace SiteGen.Core.Services.Processors;
+
+    /// &lt;summary&gt;
+    /// Updates the node front matter and metadata with
+    /// information from its last Git commit.
+    /// &lt;/summary&gt;
+    public class GitInfoProcessor : ISiteNodeProcessor
+    {
+    public async Task ProcessAsync(SiteNode node, CancellationToken cancellationToken)
+    {
+    var startInfo = new ProcessStartInfo
+    {
+    FileName = "git",
+    Arguments = $"log -1 --pretty=format:\"%aI '%an' '%ae'\" \"{node.Path}\"",
+    RedirectStandardOutput = true,
+    RedirectStandardError = true
+    };
+
+    var process = Process.Start(startInfo)!;
+    process.WaitForExit(1000);
+
+    var output = await process.StandardOutput.ReadToEndAsync(cancellationToken);
+    var error = await process.StandardError.ReadToEndAsync(cancellationToken);
+
+    var chunks = output.Trim().Split(' ');
+
+    if(!string.IsNullOrWhiteSpace(error) || chunks.Length == 0 || string.IsNullOrWhiteSpace(chunks[0]))
+    {
+    return;
+    }
+
+    var authorDate = DateTimeOffset.Parse(chunks[0]);
+
+    node.Date ??= authorDate;
+    node.DateModified = authorDate;
+    }
+    }
+</code></pre>
+    </div>
 </body>
 </html>

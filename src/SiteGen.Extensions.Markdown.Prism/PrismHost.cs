@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.Playwright;
+using Markdig.Syntax;
 
 namespace SiteGen.Extensions.Markdown.Prism;
 
@@ -25,7 +26,7 @@ public class PrismHost : IAsyncDisposable
         await page.CloseAsync();
     }
 
-    public async Task<string> Highlight(string source, string language)
+    public async Task<string> Highlight(CodeBlock block, CodeBlockArgs args)
     {
         if (!isInitialized)
         {
@@ -54,9 +55,11 @@ public class PrismHost : IAsyncDisposable
             }
         }
 
+        // {linenos=inline hl_lines=[3,"6-8"] style=emacs}
+
         // Set the source code
         return await page.EvaluateAsync<string>($@"(source) => {{
-    return Prism.highlight(source, Prism.languages.{language.ToLowerInvariant()}, ""{language.ToLowerInvariant()}"");
-}}", source);
+    return Prism.highlight(source, Prism.languages.{args.Language.ToLowerInvariant()}, ""{args.Language.ToLowerInvariant()}"");
+}}", args.Content);
     }
 }
