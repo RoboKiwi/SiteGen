@@ -1,0 +1,11 @@
+{
+    "version": "3.0",
+    "defaultProvider": "unpkg",
+    "libraries": [
+        {
+            "provider": "unpkg",
+            "library": "prismjs@1.30.0",
+            "destination": "wwwroot/lib/prismjs/"
+        }
+    ]
+}

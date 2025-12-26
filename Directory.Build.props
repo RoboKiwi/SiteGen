@@ -5,6 +5,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>latest</LangVersion>
     <Version>0.1.11-alpha4</Version>
+    <PlaywrightPlatform Condition="'$(PlaywrightPlatform)' == ''">none</PlaywrightPlatform>
   </PropertyGroup>
   <ItemGroup>
     <InternalsVisibleTo Include="SiteGen.Tests"></InternalsVisibleTo>

@@ -1,4 +1,7 @@
-﻿using Markdig.Renderers;
+﻿using System.Collections.Generic;
+using Markdig.Extensions.GenericAttributes;
+using Markdig.Helpers;
+using Markdig.Renderers;
 using Markdig.Renderers.Html;
 using Microsoft.Extensions.Logging;
 
@@ -40,32 +43,73 @@ public class PrismCodeBlockRenderer(PrismHost host, ILogger<PrismCodeBlockRender
 
         if (renderer.EnableHtmlForBlock)
         {
+            var args = new CodeBlockArgs
+            {
+                Content = obj.Lines.ToString()
+            };
+
             // Get the code language, defaulting to text.
-            var lang = obj.Info?.ToString() ?? "text";
-            if (string.IsNullOrWhiteSpace(lang)) lang = "text";
+            args.Language = obj.Info?.ToString() ?? "text";
+            if (string.IsNullOrWhiteSpace(args.Language)) args.Language = "text";
 
             // Correct any unsupported languages to equivalents
-            lang = lang switch
+            args.Language = args.Language switch
             {
                 "cmd" => "shell",
-                _ => lang
+                _ => args.Language
             };
+
+            var arguments = new StringSlice(obj.Arguments);
+
+            if(GenericAttributesParser.TryParse(ref arguments, out var attributes) && attributes.Properties is not null)
+            {
+                foreach (var attribute in attributes.Properties)
+                {
+                    switch (attribute.Key.ToLowerInvariant())
+                    {
+                        case "linenumbers":
+                        case "line-numbers":
+                        case "line_numbers":
+                        case "linenos":
+                            switch(attribute.Value?.ToLowerInvariant())
+                            {
+                                case "inline":
+                                case "table":
+                                case "true":
+                                    args.LineNumbers = true;
+                                    break;
+                            }
+                            break;
+                        case "highlight":
+                        case "highlightlines":
+                        case "highlight-lines":
+                        case "highlight_lines":
+                        case "hl_lines":
+                        {
+                            if(attribute.Value is null) break;
+                            var ranges = attribute.Value.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+                                                        
+                            break;
+                        }
+                            
+                    }
+                }
+            }
 
             renderer.Write("<pre").WriteAttributes(obj).Write(">");
 
             try
             {
-                if(!supportedLanguageCodes.Contains(lang.ToLowerInvariant()))
+                if(!supportedLanguageCodes.Contains(args.Language.ToLowerInvariant()))
                 {
-                    logger.LogWarning("Unsupported PrismJS language: {Language} [{Line}:{Column}]", lang, obj.Line, obj.Column);
+                    logger.LogWarning("Unsupported PrismJS language: {Language} [{Line}:{Column}]", args.Language, obj.Line, obj.Column);
                     // If the language is not supported, just render the raw code block
                     renderer.WriteLeafRawLines(obj, true, renderer.EnableHtmlEscape);
                     return;
                 }
                 else
                 {
-                    var contents = obj.Lines.ToString();
-                    var output = host.Highlight(contents, lang).GetAwaiter().GetResult();
+                    var output = host.Highlight(obj, args).GetAwaiter().GetResult();
 
                     renderer.Write("<code>");
                     renderer.Write(output);
@@ -88,4 +132,21 @@ public class PrismCodeBlockRenderer(PrismHost host, ILogger<PrismCodeBlockRender
             renderer.WriteLeafRawLines(obj, true, renderer.EnableHtmlEscape);
         }
     }
+}
+
+public class CodeBlockArgs
+{
+    public string Language { get; set; } = "text";
+
+    /// <summary>
+    /// Gets or sets a value indicating whether line numbers should be displayed in the output.
+    /// </summary>
+    public bool LineNumbers { get; set;  }
+
+    /// <summary>
+    /// The lines to highlight.
+    /// </summary>
+    public List<Range> HighlightLines { get; set;  } = new List<Range>();
+
+    public string Content { get; internal set; }
 }
