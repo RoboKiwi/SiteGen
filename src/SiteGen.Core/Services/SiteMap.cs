@@ -25,6 +25,7 @@ public static class SiteMapExtensions
 {
     public static SiteNode? FindByUri(this SiteMap nodes, Uri uri)
     {
+        // TODO: Decode URLs in advance to prevent string allocations?
         var results = nodes.Where(x => x.Url == uri || WebUtility.UrlDecode(x.Url.ToString()) == WebUtility.UrlDecode(uri.ToString())).ToList();
         if (results.Count > 1)
         {
