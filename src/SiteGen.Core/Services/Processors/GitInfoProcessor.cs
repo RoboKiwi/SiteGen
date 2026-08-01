@@ -1,4 +1,6 @@
-﻿using LibGit2Sharp;
+﻿using System.Collections.Concurrent;
+
+using LibGit2Sharp;
 using SiteGen.Core.Models;
 
 namespace SiteGen.Core.Services.Processors;
@@ -25,9 +27,9 @@ public class GitInfoProcessor : ISiteNodeProcessor
         node.DateModified = history.ModifiedTimestamp;
     }
 
-    static readonly Dictionary<string, Dictionary<string, GitInfo>> histories = new();
+    static readonly ConcurrentDictionary<string, Dictionary<string, GitInfo>> histories = new();
 
-    GitInfo? QueryHistory(SiteNode node, CancellationToken cancellationToken)
+    static GitInfo? QueryHistory(SiteNode node, CancellationToken cancellationToken)
     {
         var repoPath = Repository.Discover(node.Path);
         if(string.IsNullOrWhiteSpace(repoPath)) return null;
@@ -91,7 +93,7 @@ public class GitInfoProcessor : ISiteNodeProcessor
 
             histories[repoPath] = history;
         }
-        
+
         return history.TryGetValue(node.Path, out var gitInfo) ? gitInfo : null;
     }
 }
